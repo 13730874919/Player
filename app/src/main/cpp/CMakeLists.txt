@@ -13,15 +13,18 @@ cmake_minimum_required(VERSION 3.4.1)
 set(FFMPEG_DIR "D:/AndroidWork/ffmpeg/ffmpeg/app")
 #ffmpeg头文件路径
 set(FFMPEG_INCLUDE_DIR ${FFMPEG_DIR}/include)
-set(FFMPEG ${FFMPEG_DIR}/src/main/cpp/FFmpeg)
-set(IPLAYER ${FFMPEG_DIR}/src/main/cpp/IPlayer)
+set(FFMPEG_PACK_INCLUDE_DIR ${FFMPEG_DIR}/src/main/cpp/FFmpeg)
+set(IPLAYER_INCLUDE_DIR ${FFMPEG_DIR}/src/main/cpp/IPlayer)
+set(TOOL_INCLUDE_DIR ${FFMPEG_DIR}/src/main/cpp/Tool)
 #ffmpeg库路径
 set(FFMPEG_LIB_DIR ${FFMPEG_DIR}/libs/${ANDROID_ABI})
 
 
 include_directories(include ${FFMPEG_INCLUDE_DIR})
-include_directories(include ${FFMPEG})
-include_directories(include ${IPLAYER})
+include_directories(include ${FFMPEG_PACK_INCLUDE_DIR})
+include_directories(include ${IPLAYER_INCLUDE_DIR})
+include_directories(include ${TOOL_INCLUDE_DIR})
+
 add_library(avcodec SHARED IMPORTED)
 set_target_properties(avcodec PROPERTIES IMPORTED_LOCATION ${FFMPEG_LIB_DIR}/libavcodec.so)
 
@@ -40,12 +43,12 @@ add_library( # Sets the name of the library.
 
              # Sets the library as a shared library.
              SHARED
-             XLog.cpp
-             XData.cpp
-                FFmpeg/FFDemux.cpp
-                IPlayer/IDemux.cpp
-                XThread.cpp
-            IObserver.cpp
+            Tool/XLog.cpp
+            Tool/XData.cpp
+            FFmpeg/FFDemux.cpp
+            IPlayer/IDemux.cpp
+            Tool/XThread.cpp
+            Tool/IObserver.cpp
              # Provides a relative path to your source file(s).
              native-lib.cpp )
 

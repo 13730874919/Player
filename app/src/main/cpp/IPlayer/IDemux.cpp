@@ -2,9 +2,10 @@
 // Created by unionman on 2020/4/1.
 //
 
-#include <../XData.h>
+#include <XData.h>
 #include "IDemux.h"
-#include "../XLog.h"
+#include "XLog.h"
+
 
 bool IDemux::Open(const  char *url){
 

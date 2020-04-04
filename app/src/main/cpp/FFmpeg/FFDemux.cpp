@@ -5,9 +5,9 @@ extern "C"{
 #include <libavformat/avformat.h>
 }
 
-#include <../XData.h>
+#include <XData.h>
 #include "FFDemux.h"
-#include "../XLog.h"
+#include "XLog.h"
 
 
 
