@@ -5,8 +5,11 @@ extern "C"{
 #include <libavformat/avformat.h>
 }
 
+#include <../XData.h>
 #include "FFDemux.h"
-#include "XLog.h"
+#include "../XLog.h"
+
+
 
 bool FFDemux::Open(const  char *url) {
     XLOGI("open url %s",url);

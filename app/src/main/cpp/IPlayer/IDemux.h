@@ -5,8 +5,8 @@
 #ifndef FFMPEG_IDEMUX_H
 #define FFMPEG_IDEMUX_H
 
-#include "XData.h"
-#include "XThread.h"
+#include "../XData.h"
+#include "../XThread.h"
 
 
 class IDemux: public XThread {
