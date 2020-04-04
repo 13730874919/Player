@@ -5,8 +5,10 @@
 #ifndef FFMPEG_IOBSERVER_H
 #define FFMPEG_IOBSERVER_H
 
+
+#include <mutex>
+#include <vector>
 #include "XData.h"
-#include "XThread.h"
 
 class IObserver {
 public:
@@ -15,7 +17,9 @@ public:
     virtual void Notifly();
 
 protected:
-    std::vector <IObserver *> obss;
+std::mutex mute;
+std::vector<IObserver *> obbs;
+
 
 
 };

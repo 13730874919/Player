@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 #ffmpeg路径
-set(FFMPEG_DIR "D:/androidapp/ffmpeg/ffmpeg/app")
+set(FFMPEG_DIR "D:/AndroidWork/ffmpeg/ffmpeg/app")
 #ffmpeg头文件路径
 set(FFMPEG_INCLUDE_DIR ${FFMPEG_DIR}/include)
 #ffmpeg库路径

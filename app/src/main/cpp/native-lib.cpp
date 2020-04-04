@@ -38,7 +38,7 @@ Java_com_bds_ffmpeg_MainActivity_stringFromJNI(
     std::string hello = "6666";
 
     IDemux *de = new FFDemux();
-    de->Open("sdcard/4k.mp4");
+    de->Open("sdcard/1080.mp4");
     de->start();
     XSleep(3000);
     de->stop();
