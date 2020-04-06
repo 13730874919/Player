@@ -145,7 +145,7 @@
 #define FF_API_AFD               (LIBAVCODEC_VERSION_MAJOR < 58)
 #endif
 #ifndef FF_API_VISMV
-/* XXX: don't forget to drop the -vismv documentation */
+/* XXX: don't forget to Drop the -vismv documentation */
 #define FF_API_VISMV             (LIBAVCODEC_VERSION_MAJOR < 58)
 #endif
 #ifndef FF_API_AUDIOENC_DELAY

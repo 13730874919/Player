@@ -11,6 +11,8 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 #ffmpeg路径
 set(FFMPEG_DIR "D:/AndroidWork/ffmpeg/app")
+
+#set(FFMPEG_DIR "../../../../")
 #ffmpeg头文件路径
 set(FFMPEG_INCLUDE_DIR ${FFMPEG_DIR}/include)
 set(FFMPEG_PACK_INCLUDE_DIR ${FFMPEG_DIR}/src/main/cpp/FFmpeg)
@@ -37,6 +39,12 @@ set_target_properties(avutil PROPERTIES IMPORTED_LOCATION ${FFMPEG_LIB_DIR}/liba
 
 
 
+add_library(swscale SHARED IMPORTED)
+set_target_properties(swscale PROPERTIES IMPORTED_LOCATION ${FFMPEG_LIB_DIR}/libswscale.so)
+
+add_library(swresample SHARED IMPORTED)
+set_target_properties(swresample PROPERTIES IMPORTED_LOCATION ${FFMPEG_LIB_DIR}/libswresample.so)
+
 
 add_library( # Sets the name of the library.
              native-lib
@@ -46,8 +54,11 @@ add_library( # Sets the name of the library.
             Tool/XLog.cpp
             Tool/XData.cpp
             FFmpeg/FFDemux.cpp
+            FFmpeg/FFDecode.cpp
             IPlayer/IDemux.cpp
+            IPlayer/IDecode.cpp
             Tool/XThread.cpp
+        Tool/XParameter.cpp
             Tool/IObserver.cpp
              # Provides a relative path to your source file(s).
              native-lib.cpp )
@@ -71,8 +82,10 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries( # Specifies the target library.
                        native-lib
-                       android
-                       avcodec avformat avutil
+GLESv2 EGL
+OpenSLES
+android
+avcodec avformat avutil swscale swresample
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )

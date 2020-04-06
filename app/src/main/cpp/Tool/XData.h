@@ -7,9 +7,11 @@
 
 
 struct XData {
-    unsigned char *data;
+    unsigned char *data=0;
     int size=0;
-    void drop();
+    bool isAudio=false;
+    int pts=0;
+    void Drop();
 
 };
 

@@ -17,7 +17,11 @@ XData IDemux::Read(){
 void IDemux::Main() {
     while(!isExit){
         XData data = Read();
-        if(data.size<=0) break;
-        XLOGI("IDemux Read %d",data.size);
+        if(data.size>0){
+       //     XLOGE("IDemux read data addr size %d   %d",data.size,(long long)data.data);
+            Notify(data);
+        }
+
+    //    XLOGI("IDemux Read pts==%d",data.pts);
     }
 }

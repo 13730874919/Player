@@ -820,7 +820,7 @@ enum Motion_Est_ID {
  */
 enum AVDiscard{
     /* We leave some space between them for extensions (drop some
-     * keyframes for intra-only or drop just some bidir frames). */
+     * keyframes for intra-only or Drop just some bidir frames). */
     AVDISCARD_NONE    =-16, ///< discard nothing
     AVDISCARD_DEFAULT =  0, ///< discard useless packets like 0 size packets in avi
     AVDISCARD_NONREF  =  8, ///< discard all non reference
@@ -5075,6 +5075,7 @@ int avcodec_decode_subtitle2(AVCodecContext *avctx, AVSubtitle *sub,
  *      AVERROR(ENOMEM):   failed to add packet to internal queue, or similar
  *      other errors: legitimate decoding errors
  */
+
 int avcodec_send_packet(AVCodecContext *avctx, const AVPacket *avpkt);
 
 /**

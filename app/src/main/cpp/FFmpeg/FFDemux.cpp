@@ -27,22 +27,40 @@ bool FFDemux::Open(const  char *url) {
     XLOGE("avformat_find_stream_info success");
     this->total = ic->duration/(AV_TIME_BASE/1000);
     XLOGI("this->total= %d",total);
-    return false;
+    GetVPara();
+    GetAPara();
+    return true;
 }
 
 XData FFDemux::Read() {
     if(!ic)return XData();
     XData data;
-    AVPacket *pk = av_packet_alloc();
-    int re = av_read_frame(ic,pk);
+    AVPacket *pkt = av_packet_alloc();
+    int re = av_read_frame(ic,pkt);
     if(re!=0){
-        XLOGE("av_read_frame read failed %d",re);
-        av_packet_free(&pk);
+       // XLOGE("av_read_frame read failed %d",re);
+        av_packet_free(&pkt);
         return XData();
     }
-    data.data = (unsigned char *)pk;
-    data.size = pk->size;
-    XLOGI("pk->size===%d  total===%d  pts==%d",pk->size,total,pk->pts);
+  //  XLOGI(" FFDemux  pkt.siz=%d data", pkt->size);
+    data.data = (unsigned char *)pkt;
+    data.size = pkt->size;
+    if(pkt->stream_index == audioStream)
+    {
+        data.isAudio = true;
+    }
+    else if(pkt->stream_index == videoStream)
+    {
+        data.isAudio = false;
+    }
+    else
+    {
+        av_packet_free(&pkt);
+        return XData();
+    }
+   data.pts = pkt->pts;
+
+  //  XLOGI("pk->size===%d  total===%d  pts==%d",pkt->size,total,pkt->pts);
     return data;
 }
 
@@ -58,6 +76,42 @@ FFDemux::FFDemux() {
 
         avformat_network_init();
     }
+}
+
+XParameter FFDemux::GetVPara() {
+    if (!ic) {
+        XLOGE("GetVPara failed! ic is NULL！");
+        return XParameter();
+    }
+    //获取了视频流索引
+    int re = av_find_best_stream(ic, AVMEDIA_TYPE_VIDEO, -1, -1, 0, 0);
+    if (re < 0) {
+        XLOGE("av_find_best_stream failed!");
+        return XParameter();
+    }
+    videoStream = re;
+    XParameter para;
+    para.para = ic->streams[re]->codecpar;
+
+
+    return para;
+}
+
+XParameter FFDemux::GetAPara() {
+    if (!ic) {
+        XLOGE("GetVPara failed! ic is NULL！");
+        return XParameter();
+    }
+    //获取了音频流索引
+    int re = av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO, -1, -1, 0, 0);
+    if (re < 0) {
+        XLOGE("av_find_best_stream failed!");
+        return XParameter();
+    }
+    audioStream = re;
+    XParameter para;
+    para.para = ic->streams[re]->codecpar;
+    return para;
 }
 
 

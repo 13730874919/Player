@@ -2,16 +2,26 @@
 #include <string>
 #include <android/log.h>
 #include<iostream>
+#include <IDecode.h>
+#include <FFDecode.h>
 #include "FFmpeg/FFDemux.h"
 #include "IPlayer/IDemux.h"
 #include "XThread.h"
+#include "XLog.h"
 
-#define LOGW(...) __android_log_print(ANDROID_LOG_WARN,"testff",__VA_ARGS__)
+
 extern "C"{
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavcodec/jni.h>
 }
+class testObds : public IObserver{
+public:
+    void Update(XData data) override {
+        IObserver::Update(data);
+     //   XLOGI("Observer::Update data.sizi =%d",data.size);
+    }
+};
 extern "C"
 JNIEXPORT
 jint JNI_OnLoad(JavaVM *vm,void *res)
@@ -40,9 +50,19 @@ Java_com_bds_ffmpeg_MainActivity_stringFromJNI(
 
     IDemux *de = new FFDemux();
     de->Open("sdcard/1080.mp4");
+
+    IDecode *vdecode = new FFDecode();
+    IDecode *adecode = new FFDecode();
+    vdecode->Open(de->GetVPara());
+    adecode->Open(de->GetAPara());
+    de->AddObs(vdecode);
+    de->AddObs(adecode);
+
     de->start();
-    XSleep(3000);
-    de->stop();
+    vdecode->start();
+  //  adecode->start();
+
+
 
 
     return env->NewStringUTF(hello.c_str());
