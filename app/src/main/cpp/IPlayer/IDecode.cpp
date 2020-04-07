@@ -39,7 +39,6 @@ void IDecode::Main()
         //取出packet 消费者
         XData pack = packs.front();
         packs.pop_front();
-        XLOGI("FFDecode pop_front once ");
         //发送数据到解码线程，一个数据包，可能解码多个结果
         if (this->SendPacket(pack))
         {
@@ -48,8 +47,7 @@ void IDecode::Main()
                 //获取解码数据
                 XData frame = RecvFrame();
                 if (!frame.data) break;
-                //XLOGE("RecvFrame %d",frame.size);
-            //    XLOGI("IDecode Read pts==%d",frame.pts);
+                XLOGE("RecvFrame %d",frame.size);
                 //发送数据给观察者
                 this->Notify(frame);
             }

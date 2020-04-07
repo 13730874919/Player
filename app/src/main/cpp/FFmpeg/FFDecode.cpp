@@ -22,9 +22,10 @@ bool FFDecode::Open(XParameter par) {
 
     //创建上下文
     codec = avcodec_alloc_context3(cd);
+    avcodec_parameters_to_context(codec,p);
     codec->thread_count = 8;
     //打开解码器
-    int re = avcodec_open2(codec,cd,0);
+    int re = avcodec_open2(codec,0,0);
     if(re != 0)
     {
         char buf[1024] = {0};
@@ -57,13 +58,10 @@ bool FFDecode::SendPacket(XData pkt) {
 
     if(re != 0)
     {
-       // XLOGI(" avcodec_send_packet error ret=%d", re);
-        XLOGI(" avcodec_send_packet error sendcnt=%d ",sendcnt);
+        XLOGI(" avcodec_send_packet error ret=%d", re);
+      //  XLOGI(" avcodec_send_packet error sendcnt=%d ",sendcnt);
         return false;
     }
-    XLOGI(" avcodec_send_packet  sendcnt=%d ",sendcnt);
-    sendcnt++;
-
     return true;
 }
 
@@ -76,18 +74,13 @@ XData FFDecode::RecvFrame() {
     {
          frame = av_frame_alloc();
     }
-//    XLOGI(" avcodec_receive_frame  reccnt=%d ",reccnt);
     int re = avcodec_receive_frame(codec,frame);
- //   XLOGI(" avcodec_receive_frame  reccnt=%d ",re);
-//    if(reccnt==3)
-//    while(1);
+
     if(re != 0)
     {
         return XData();
     }
-//    reccnt++;
-    //XLOGI(" avcodec_receive_frame  reccnt=%d ",reccnt);
-//    while(1);
+
     XData d;
 
     d.data = (unsigned char *)frame;
