@@ -51,15 +51,15 @@ add_library( # Sets the name of the library.
 
              # Sets the library as a shared library.
              SHARED
-            Tool/XLog.cpp
-            Tool/XData.cpp
-            FFmpeg/FFDemux.cpp
-            FFmpeg/FFDecode.cpp
             IPlayer/IDemux.cpp
-            IPlayer/IDecode.cpp
+        IPlayer/IDecode.cpp
+        FFmpeg/FFDemux.cpp
+        FFmpeg/FFDecode.cpp
+            Tool/XData.cpp
+            Tool/XLog.cpp
             Tool/XThread.cpp
-        Tool/XParameter.cpp
             Tool/IObserver.cpp
+            Tool/XParameter.cpp
              # Provides a relative path to your source file(s).
              native-lib.cpp )
 

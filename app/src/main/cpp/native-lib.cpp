@@ -1,69 +1,86 @@
+/*******************************************************************************
+**                                                                            **
+**                     Jiedi(China nanjing)Ltd.                               **
+**	               创建：夏曹俊，此代码可用作为学习参考                       **
+*******************************************************************************/
+
+/*****************************FILE INFOMATION***********************************
+**
+** Project       : FFmpeg
+** Description   : FFMPEG项目创建示例
+** Contact       : xiacaojun@qq.com
+**        博客   : http://blog.csdn.net/jiedichina
+**		视频课程 : 网易云课堂	http://study.163.com/u/xiacaojun		
+				   腾讯课堂		https://jiedi.ke.qq.com/				
+				   csdn学院		http://edu.csdn.net/lecturer/lecturer_detail?lecturer_id=961	
+**                 51cto学院	http://edu.51cto.com/lecturer/index/user_id-12016059.html	
+** 				   下载最新的ffmpeg版本 ffmpeg.club
+**                 
+**   安卓流媒体播放器 课程群 ：23304930 加入群下载代码和交流
+**   微信公众号  : jiedi2007
+**		头条号	 : 夏曹俊
+**
+*******************************************************************************/
+//！！！！！！！！！ 加群23304930下载代码和交流
+
+
 #include <jni.h>
 #include <string>
-#include <android/log.h>
-#include<iostream>
-#include <IDecode.h>
-#include <FFDecode.h>
-#include "FFmpeg/FFDemux.h"
-#include "IPlayer/IDemux.h"
-#include "XThread.h"
+
+#include "FFDemux.h"
 #include "XLog.h"
+#include "FFDecode.h"
 
-
-extern "C"{
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-#include <libavcodec/jni.h>
-}
-class testObds : public IObserver{
+class TestObs:public IObserver
+{
 public:
-    void Update(XData data) override {
-        IObserver::Update(data);
-     //   XLOGI("Observer::Update data.sizi =%d",data.size);
+    void Update(XData d)
+    {
+        //XLOGI("TestObs Update data size is %d",d.size);
     }
 };
+
+
+
 extern "C"
-JNIEXPORT
-jint JNI_OnLoad(JavaVM *vm,void *res)
-{
-    av_jni_set_java_vm(vm,0);
-    return JNI_VERSION_1_4;
-}
+JNIEXPORT jstring JNICALL
+Java_com_bds_ffmpeg_MainActivity_stringFromJNI(JNIEnv *env, jobject thiz) {
+    std::string hello = "Hello from C++";
 
-long long GetNowMs(){
-    struct timeval tv;
-    gettimeofday(&tv,NULL);
-    int sec = tv.tv_sec%360000;
-    int ret = sec*1000+tv.tv_usec/1000;
-    return ret;
-}
+    //XLOGI("S begin!");
+    //XSleep(3000);
+    //XLOGI("S end!");
+    //return env->NewStringUTF(hello.c_str());
 
-static double r2d(AVRational r){
-    return r.num==0||r.den==0?0:(double)r.num/(double)r.den;
-}
-
-extern "C" JNIEXPORT jstring JNICALL
-Java_com_bds_ffmpeg_MainActivity_stringFromJNI(
-        JNIEnv* env,
-        jobject /* this */) {
-    std::string hello = "6666";
-
+    ///////////////////////////////////
+    ///测试用代码
+    TestObs *tobs = new TestObs();
     IDemux *de = new FFDemux();
-    de->Open("sdcard/1080.mp4");
+    //de->AddObs(tobs);
+    de->Open("/sdcard/1080.mp4");
 
     IDecode *vdecode = new FFDecode();
-    IDecode *adecode = new FFDecode();
     vdecode->Open(de->GetVPara());
+
+    IDecode *adecode = new FFDecode();
     adecode->Open(de->GetAPara());
     de->AddObs(vdecode);
     de->AddObs(adecode);
 
-    de->start();
-    vdecode->start();
-  //  adecode->start();
+    //vdecode->Open();
+    de->Start();
+    vdecode->Start();
+    adecode->Start();
+
+    //XSleep(3000);
+    //de->Stop();
+    /*for(;;)
+    {
+        XData d = de->Read();
+        XLOGI("Read data size is %d",d.size);
 
 
-
+    }*/
 
     return env->NewStringUTF(hello.c_str());
 }
