@@ -66,30 +66,31 @@ bool FFDecode::SendPacket(XData pkt) {
 }
 
 XData FFDecode::RecvFrame() {
-    if(!codec)
-    {
+    if (!codec) {
         return XData();
     }
-    if(!frame)
-    {
-         frame = av_frame_alloc();
+    if (!frame) {
+        frame = av_frame_alloc();
     }
-    int re = avcodec_receive_frame(codec,frame);
+    int re = avcodec_receive_frame(codec, frame);
 
-    if(re != 0)
-    {
+    if (re != 0) {
         return XData();
     }
 
     XData d;
 
-    d.data = (unsigned char *)frame;
-    if(codec->codec_type == AVMEDIA_TYPE_VIDEO)
+    d.data = (unsigned char *) frame;
+    if (codec->codec_type == AVMEDIA_TYPE_VIDEO){
         //YUV
-        d.size = (frame->linesize[0] + frame->linesize[1] + frame->linesize[2])*frame->height;
+        d.size = (frame->linesize[0] + frame->linesize[1] + frame->linesize[2]) * frame->height;
+        d.width = frame->width;
+        d.height = frame->height;
+    }
     else {
         //样本字节数 * 单通道样本数 * 通道数
         d.size = av_get_bytes_per_sample((AVSampleFormat)frame->format)*frame->nb_samples*2;
     }
+    memcpy(d.framedatas,frame->data,sizeof(d.framedatas));
     return d;
 }

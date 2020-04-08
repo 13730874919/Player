@@ -8,6 +8,9 @@
 
 struct XData {
     unsigned char *data=0;
+    int width = 0;
+    int height =0;
+    unsigned char *framedatas[8]={0};
     int size=0;
     bool isAudio=false;
     int pts=0;

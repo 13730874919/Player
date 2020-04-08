@@ -18,6 +18,7 @@ set(FFMPEG_INCLUDE_DIR ${FFMPEG_DIR}/include)
 set(FFMPEG_PACK_INCLUDE_DIR ${FFMPEG_DIR}/src/main/cpp/FFmpeg)
 set(IPLAYER_INCLUDE_DIR ${FFMPEG_DIR}/src/main/cpp/IPlayer)
 set(TOOL_INCLUDE_DIR ${FFMPEG_DIR}/src/main/cpp/Tool)
+set(OPENGL_INCLUDE_DIR ${FFMPEG_DIR}/src/main/cpp/OpenGL)
 #ffmpeg库路径
 set(FFMPEG_LIB_DIR ${FFMPEG_DIR}/libs/${ANDROID_ABI})
 
@@ -26,6 +27,7 @@ include_directories(include ${FFMPEG_INCLUDE_DIR})
 include_directories(include ${FFMPEG_PACK_INCLUDE_DIR})
 include_directories(include ${IPLAYER_INCLUDE_DIR})
 include_directories(include ${TOOL_INCLUDE_DIR})
+include_directories(include ${OPENGL_INCLUDE_DIR})
 
 add_library(avcodec SHARED IMPORTED)
 set_target_properties(avcodec PROPERTIES IMPORTED_LOCATION ${FFMPEG_LIB_DIR}/libavcodec.so)
@@ -57,9 +59,14 @@ add_library( # Sets the name of the library.
             FFmpeg/FFDecode.cpp
             IPlayer/IDemux.cpp
             IPlayer/IDecode.cpp
+            IPlayer/IVideoView.cpp
             Tool/XThread.cpp
-        Tool/XParameter.cpp
+            Tool/XParameter.cpp
             Tool/IObserver.cpp
+            OpenGL/XEGL.cpp
+            OpenGL/XShader.cpp
+            OpenGL/XTexture.cpp
+        OpenGL/GLVideoView.cpp
              # Provides a relative path to your source file(s).
              native-lib.cpp )
 
