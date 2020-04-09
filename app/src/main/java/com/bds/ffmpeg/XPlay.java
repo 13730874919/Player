@@ -5,9 +5,27 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 
-public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback {
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
+public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback ,GLSurfaceView.Renderer{
     public XPlay(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    @Override
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+
+    }
+
+    @Override
+    public void onDrawFrame(GL10 gl) {
+
     }
 
     public XPlay(Context context) {
@@ -19,6 +37,7 @@ public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback {
      //   super.surfaceCreated(holder);
 
         InitView(holder.getSurface());
+        setRenderer(this);
     }
 
     @Override
