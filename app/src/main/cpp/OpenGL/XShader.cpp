@@ -147,7 +147,18 @@ bool XShader::Init() {
     return true;
 }
 
-void XShader::GetTexture(unsigned int index, int width, int height, unsigned char *buf) {
+
+void XShader::Draw()
+{
+    if(!program)
+        return;
+    //三维绘制
+    glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+}
+
+void XShader::GetTexture(unsigned int index,int width,int height, unsigned char *buf)
+{
+
     if(texts[index] == 0)
     {
         //材质初始化
@@ -178,9 +189,3 @@ void XShader::GetTexture(unsigned int index, int width, int height, unsigned cha
     glTexSubImage2D(GL_TEXTURE_2D,0,0,0,width,height,GL_LUMINANCE,GL_UNSIGNED_BYTE,buf);
 }
 
-void XShader::Draw() {
-    if(!program)
-        return;
-    //三维绘制
-    glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-}
