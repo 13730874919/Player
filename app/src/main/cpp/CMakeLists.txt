@@ -57,16 +57,20 @@ add_library( # Sets the name of the library.
             Tool/XData.cpp
             FFmpeg/FFDemux.cpp
             FFmpeg/FFDecode.cpp
+        FFmpeg/FFResample.cpp
             IPlayer/IDemux.cpp
             IPlayer/IDecode.cpp
+        IPlayer/IResample.cpp
+        IPlayer/IAudioPlay.cpp
             IPlayer/IVideoView.cpp
             Tool/XThread.cpp
             Tool/XParameter.cpp
             Tool/IObserver.cpp
             OpenGL/XEGL.cpp
             OpenGL/XShader.cpp
+        OpenGL/SLAudioPlay.cpp
             OpenGL/XTexture.cpp
-        OpenGL/GLVideoView.cpp
+            OpenGL/GLVideoView.cpp
              # Provides a relative path to your source file(s).
              native-lib.cpp )
 

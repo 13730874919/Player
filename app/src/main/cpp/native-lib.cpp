@@ -13,6 +13,8 @@
 #include <XShader.h>
 #include <IVideoView.h>
 #include <GLVideoView.h>
+#include <IResample.h>
+#include <FFResample.h>
 
 extern "C"{
 #include <libavcodec/avcodec.h>
@@ -58,11 +60,15 @@ Java_com_bds_ffmpeg_MainActivity_stringFromJNI(
 
     IDecode *vdecode = new FFDecode();
     IDecode *adecode = new FFDecode();
+    IResample *resample = new FFResample();
     view = new GLVideoView();
+
     vdecode->Open(de->GetVPara());
     adecode->Open(de->GetAPara());
+    resample->init(de->GetAPara());
     de->AddObs(vdecode);
     de->AddObs(adecode);
+    adecode->AddObs(resample);
     vdecode->AddObs(view);
     de->start();
     vdecode->start();
