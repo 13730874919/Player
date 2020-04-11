@@ -9,10 +9,13 @@
 #include <mutex>
 
 #include <IObserver.h>
+#include <XParameter.h>
 
-class IAudioPlay : IObserver{
+class IAudioPlay : public IObserver{
 public:
+    virtual bool StartPlay(XParameter out) = 0;
     void Update(XData data) override;
+    virtual XData GetData();
     int  maxFrame = 100;
 protected:
     std::list <XData> frames;

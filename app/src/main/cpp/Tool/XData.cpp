@@ -21,10 +21,16 @@ void XData::Drop()
     bool isAudio = false;
 }
 
-bool XData::Alloc(int size) {
+bool XData::Alloc(int size,const char *d) {
     Drop();
     type = CHAR_TYPE;
-    this->data = new unsigned char(size);
+    if(size <=0)return false;
+    this->data = new unsigned char[size];
     if(!this->data) return false;
+    if(d)
+    {
+        memcpy(this->data,d,size);
+    }
+    this->size = size;
     return true;
 };

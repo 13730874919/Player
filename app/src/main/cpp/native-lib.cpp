@@ -15,6 +15,7 @@
 #include <GLVideoView.h>
 #include <IResample.h>
 #include <FFResample.h>
+#include <SLAudioPlay.h>
 
 extern "C"{
 #include <libavcodec/avcodec.h>
@@ -65,7 +66,11 @@ Java_com_bds_ffmpeg_MainActivity_stringFromJNI(
 
     vdecode->Open(de->GetVPara());
     adecode->Open(de->GetAPara());
-    resample->init(de->GetAPara());
+    XParameter outPara = de->GetAPara();
+    resample->init(de->GetAPara(),outPara);
+    IAudioPlay *audioPlay = new SLAudioPlay();
+    audioPlay->StartPlay(de->GetAPara());
+    resample->AddObs(audioPlay);
     de->AddObs(vdecode);
     de->AddObs(adecode);
     adecode->AddObs(resample);

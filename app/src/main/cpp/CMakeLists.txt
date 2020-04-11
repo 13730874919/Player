@@ -71,6 +71,7 @@ add_library( # Sets the name of the library.
         OpenGL/SLAudioPlay.cpp
             OpenGL/XTexture.cpp
             OpenGL/GLVideoView.cpp
+        OpenGL/SLAudioPlay.cpp
              # Provides a relative path to your source file(s).
              native-lib.cpp )
 

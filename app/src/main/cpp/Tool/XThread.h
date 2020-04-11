@@ -13,7 +13,7 @@ virtual void stop();
 
 protected:
 bool isRunning=false;
-bool isExit = true;
+bool isExit = false;
 virtual void Main();
 
 private:

@@ -31,17 +31,16 @@ XData FFResample::Resample(XData indata) {
         out.Drop();
         return XData();
     }
-  //  XLOGE("swr_convert success = %d",len);
+    //XLOGE("swr_convert success = %d",len);
     return out;
 }
 
 bool FFResample::init(XParameter indata, XParameter outdata) {
     //音频重采样上下文初始化
     actx = swr_alloc();
-
     actx = swr_alloc_set_opts(actx,
                               av_get_default_channel_layout(outdata.channels),
-                              AV_SAMPLE_FMT_S16,outdata.para->sample_rate,
+                              AV_SAMPLE_FMT_S16,outdata.sample_rate,
                               av_get_default_channel_layout(indata.para->channels),
                               (AVSampleFormat)indata.para->format,indata.para->sample_rate,
                               0,0 );

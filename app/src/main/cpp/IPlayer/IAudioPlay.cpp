@@ -6,9 +6,9 @@
 #include "IAudioPlay.h"
 
 void IAudioPlay::Update(XData data) {
-    XLOGE("IAudioPlay::Update %d",data.size);
     //压入缓冲队列
     if(data.size<=0|| !data.data) return;
+    XLOGE("IAudioPlay 111zise= %d",data.size);
     while(!isExit)
     {
         frameMute.lock();
@@ -22,5 +22,23 @@ void IAudioPlay::Update(XData data) {
         frameMute.unlock();
         break;
     }
+}
+
+XData IAudioPlay::GetData() {
+    XData d;
+    while(!isExit)
+    {
+        frameMute.lock();
+        if(!frames.empty())
+        {
+            d = frames.front();
+            frames.pop_front();
+            frameMute.unlock();
+            return d;
+        }
+        frameMute.unlock();
+        XSleep(1);
+    }
+    return d;
 }
 
