@@ -16,6 +16,7 @@
 #include <IResample.h>
 #include <FFResample.h>
 #include <SLAudioPlay.h>
+#include <IPlayer.h>
 
 extern "C"{
 #include <libavcodec/avcodec.h>
@@ -30,27 +31,33 @@ jint JNI_OnLoad(JavaVM *vm,void *res)
     FFDecode::InitHard(vm);
 
     IDemux *de = new FFDemux();
-    de->Open("sdcard/1080.mp4");
-
     IDecode *vdecode = new FFDecode();
     IDecode *adecode = new FFDecode();
-    IResample *resample = new FFResample();
-    view = new GLVideoView();
 
-    vdecode->Open(de->GetVPara(), false);
-    adecode->Open(de->GetAPara());
-    XParameter outPara = de->GetAPara();
-    resample->init(de->GetAPara(),outPara);
-    IAudioPlay *audioPlay = new SLAudioPlay();
-    audioPlay->StartPlay(de->GetAPara());
-    resample->AddObs(audioPlay);
     de->AddObs(vdecode);
     de->AddObs(adecode);
-    adecode->AddObs(resample);
+
+    view = new GLVideoView();
     vdecode->AddObs(view);
-    de->start();
-    vdecode->start();
-    adecode->start();
+
+    IResample *resample = new FFResample();
+
+    adecode->AddObs(resample);
+
+    IAudioPlay *audioPlay = new SLAudioPlay();
+
+    resample->AddObs(audioPlay);
+
+    IPlayer::Get()->demux = de;
+    IPlayer::Get()->adecode = adecode;
+    IPlayer::Get()->vdecode = vdecode;
+    IPlayer::Get()->videoView = view;
+    IPlayer::Get()->resample = resample;
+    IPlayer::Get()->audioPlay = audioPlay;
+
+
+    IPlayer::Get()->Open("/sdcard/1080.mp4");
+    IPlayer::Get()->Start();
     return JNI_VERSION_1_4;
 }
 
@@ -83,6 +90,6 @@ JNIEXPORT void JNICALL
 Java_com_bds_ffmpeg_XPlay_InitView(JNIEnv *env, jobject thiz, jobject obj) {
     // TODO: implement InitView()
     ANativeWindow *win = ANativeWindow_fromSurface(env,obj);
-    view->setRender(win);
-
+   // view->setRender(win);
+    IPlayer::Get()->InitView(win);
 }

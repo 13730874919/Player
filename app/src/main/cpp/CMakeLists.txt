@@ -62,6 +62,7 @@ add_library( # Sets the name of the library.
             IPlayer/IDecode.cpp
         IPlayer/IResample.cpp
         IPlayer/IAudioPlay.cpp
+        IPlayer/IPlayer.cpp
             IPlayer/IVideoView.cpp
             Tool/XThread.cpp
             Tool/XParameter.cpp

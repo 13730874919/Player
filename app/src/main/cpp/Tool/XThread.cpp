@@ -12,11 +12,12 @@ void XSleep(int mis){
 
 }
 
-void XThread::start() {
+bool XThread::start() {
 
     isExit= false;
     thread th(&XThread::threadMain,this);
     th.detach();
+    return true;
 }
 
 void XThread::stop() {

@@ -1,0 +1,37 @@
+//
+// Created by bds on 2020/4/11.
+//
+
+#ifndef FFMPEG_IPLAYER_H
+#define FFMPEG_IPLAYER_H
+
+
+#include "IDemux.h"
+#include "IDecode.h"
+#include "IResample.h"
+#include "IVideoView.h"
+#include "IAudioPlay.h"
+
+class IPlayer {
+public:
+    static IPlayer *Get(unsigned char index=0);
+    virtual bool Open(const char *path);
+    virtual bool Start();
+    virtual void InitView(void *win);
+    //是否视频硬解码
+    bool isHardDecode = true;
+
+
+    IDemux *demux = 0;
+    IDecode *vdecode = 0;
+    IDecode *adecode = 0;
+    IResample *resample = 0;
+    IVideoView *videoView = 0;
+    IAudioPlay *audioPlay = 0;
+protected:
+    IPlayer(){};
+    XParameter outPara;
+};
+
+
+#endif //FFMPEG_IPLAYER_H
