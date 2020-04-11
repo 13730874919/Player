@@ -22,19 +22,35 @@ extern "C"{
 #include <libavformat/avformat.h>
 #include <libavcodec/jni.h>
 }
-
-class testObds : public IObserver{
-public:
-    void Update(XData data) override {
-        IObserver::Update(data);
-     //   XLOGI("Observer::Update data.sizi =%d",data.size);
-    }
-};
+IVideoView *view = NULL;
 extern "C"
 JNIEXPORT
 jint JNI_OnLoad(JavaVM *vm,void *res)
 {
-    av_jni_set_java_vm(vm,0);
+    FFDecode::InitHard(vm);
+
+    IDemux *de = new FFDemux();
+    de->Open("sdcard/1080.mp4");
+
+    IDecode *vdecode = new FFDecode();
+    IDecode *adecode = new FFDecode();
+    IResample *resample = new FFResample();
+    view = new GLVideoView();
+
+    vdecode->Open(de->GetVPara(), false);
+    adecode->Open(de->GetAPara());
+    XParameter outPara = de->GetAPara();
+    resample->init(de->GetAPara(),outPara);
+    IAudioPlay *audioPlay = new SLAudioPlay();
+    audioPlay->StartPlay(de->GetAPara());
+    resample->AddObs(audioPlay);
+    de->AddObs(vdecode);
+    de->AddObs(adecode);
+    adecode->AddObs(resample);
+    vdecode->AddObs(view);
+    de->start();
+    vdecode->start();
+    adecode->start();
     return JNI_VERSION_1_4;
 }
 
@@ -49,35 +65,13 @@ long long GetNowMs(){
 static double r2d(AVRational r){
     return r.num==0||r.den==0?0:(double)r.num/(double)r.den;
 }
-IVideoView *view = NULL;
+
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_bds_ffmpeg_MainActivity_stringFromJNI(
         JNIEnv* env,
         jobject /* this */) {
     std::string hello = "6666";
 
-    IDemux *de = new FFDemux();
-    de->Open("sdcard/1080.mp4");
-
-    IDecode *vdecode = new FFDecode();
-    IDecode *adecode = new FFDecode();
-    IResample *resample = new FFResample();
-    view = new GLVideoView();
-
-    vdecode->Open(de->GetVPara());
-    adecode->Open(de->GetAPara());
-    XParameter outPara = de->GetAPara();
-    resample->init(de->GetAPara(),outPara);
-    IAudioPlay *audioPlay = new SLAudioPlay();
-    audioPlay->StartPlay(de->GetAPara());
-    resample->AddObs(audioPlay);
-    de->AddObs(vdecode);
-    de->AddObs(adecode);
-    adecode->AddObs(resample);
-    vdecode->AddObs(view);
-    de->start();
-    vdecode->start();
-    adecode->start();
 
 
 

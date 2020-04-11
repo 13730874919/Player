@@ -8,7 +8,6 @@
 void IAudioPlay::Update(XData data) {
     //压入缓冲队列
     if(data.size<=0|| !data.data) return;
-    XLOGE("IAudioPlay 111zise= %d",data.size);
     while(!isExit)
     {
         frameMute.lock();

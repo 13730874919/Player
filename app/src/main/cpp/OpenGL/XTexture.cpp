@@ -9,16 +9,24 @@
 class CXTexture : public XTexture{
 public:
     XShader sh;
-
+    XTextureType type;
     void Draw(unsigned char **data, int width, int height) override {
            sh.GetTexture(0,width,height,data[0]);  // Y
-           sh.GetTexture(1,width/2,height/2,data[1]);  // U
-           sh.GetTexture(2,width/2,height/2,data[2]);  // V
+        if(type == XTEXTURE_YUV420P)
+        {
+            sh.GetTexture(1,width/2,height/2,data[1]);  // U
+            sh.GetTexture(2,width/2,height/2,data[2]);  // V
+        }
+        else
+        {
+            sh.GetTexture(1,width/2,height/2,data[1], true);  // UV
+        }
            sh.Draw();
            XEGL::Get()->Draw();
     }
 
-    bool init(void *win) override {
+    bool Init(void *win, XTextureType type) override {
+        this->type = type;
         if(!win)return false;
         bool  ret = XEGL::Get()->Init(win);
         if(!ret)
@@ -26,14 +34,13 @@ public:
             XLOGE("XTexture Init failed win is NULL");
             return false;
         }
-        ret = sh.Init();
+        ret = sh.Init((XShaderType)type);
         if(!ret)
         {
             XLOGE("XTexture shader Init faile");
             return false;
         }
         return true;
-
     }
 };
 XTexture *XTexture::Get() {

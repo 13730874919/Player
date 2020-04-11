@@ -11,6 +11,7 @@ enum DATA_TYPE{
 };
 struct XData {
     int type = PACK_TYPE;
+    int format = 0;
     unsigned char *data=0;
     int width = 0;
     int height =0;

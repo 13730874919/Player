@@ -17,11 +17,9 @@ static SLAndroidSimpleBufferQueueItf pcmQue = NULL;
 
 void SLAudioPlay::PlayCall(void *bufq)
 {
-    XLOGE("copy once000");
     if(!bufq)return;
-    XLOGE("copy onc111e");
     SLAndroidSimpleBufferQueueItf bf = (SLAndroidSimpleBufferQueueItf)bufq;
-    XLOGE("SLAudioPlay::PlayCall");
+//    XLOGE("SLAudioPlay::PlayCall");
     //阻塞
     XData d = GetData();
     if(d.size<=0)
@@ -29,10 +27,8 @@ void SLAudioPlay::PlayCall(void *bufq)
         XLOGE("GetData() size is 0");
         return;
     }
-    XLOGE("copy once555");
     if(!buf)
         return;
-    XLOGE("copy once");
     memcpy(buf,d.data,d.size);
     (*bf)->Enqueue(bf,buf,d.size);
     d.Drop();
