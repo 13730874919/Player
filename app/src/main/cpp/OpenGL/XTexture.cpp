@@ -64,8 +64,7 @@ public:
     }
 };
 XTexture *XTexture::Get() {
-       static CXTexture text;
-       return &text;
+    return  new CXTexture();
 }
 
 XTexture::~XTexture() {}
