@@ -13,10 +13,13 @@ public:
     bool StartPlay(XParameter out) override;
     void PlayCall(void *bufq);
 
+    void Close() override;
+
     SLAudioPlay();
     virtual ~SLAudioPlay();
 protected:
     unsigned char *buf = 0;
+    std::mutex mux;
 
 };
 

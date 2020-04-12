@@ -17,7 +17,7 @@ public:
     virtual XData Read()=0;
     virtual XParameter GetVPara()=0;
     virtual XParameter GetAPara()=0;
-
+    virtual void Close()=0;
     int total=0;
 protected:
 

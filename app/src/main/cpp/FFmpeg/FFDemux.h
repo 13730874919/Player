@@ -15,11 +15,14 @@ public:
     virtual XData Read();
     virtual XParameter GetAPara() override;
 
+    void Close() override;
+
     FFDemux();
 private:
     AVFormatContext *ic=0;
     int audioStream = 1;
     int videoStream = 0;
+    std::mutex mux;
 };
 
 

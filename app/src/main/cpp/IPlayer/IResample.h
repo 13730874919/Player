@@ -14,6 +14,7 @@ public:
     virtual bool init(XParameter indata, XParameter outdata =  XParameter())=0;
     virtual XData Resample(XData indata)=0;
     void Update(XData data) override;
+    virtual void Close()=0;
     int outChannels = 2;
     int outFormat = 1;
 };

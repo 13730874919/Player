@@ -11,6 +11,7 @@ IPlayer *IPlayer::Get(unsigned char index) {
 }
 
 bool IPlayer::Open(const char *path) {
+    Close();
     mux.lock();
     //解封装
     if(!demux || !demux->Open(path))
@@ -33,8 +34,8 @@ bool IPlayer::Open(const char *path) {
     }
 
     //重采样 有可能不需要，解码后或者解封后可能是直接能播放的数据
-    if(outPara.sample_rate <= 0)
-        outPara = demux->GetAPara();
+
+    outPara = demux->GetAPara();
     if(!resample || !resample->init(demux->GetAPara(),outPara))
     {
         XLOGE("resample->Open %s failed!",path);
@@ -45,6 +46,9 @@ bool IPlayer::Open(const char *path) {
 
 bool IPlayer::Start() {
     mux.lock();
+    if(vdecode)
+        vdecode->start();
+
     if(!demux || !demux->start())
     {
         mux.unlock();
@@ -55,16 +59,18 @@ bool IPlayer::Start() {
         adecode->start();
     if(audioPlay)
         audioPlay->StartPlay(outPara);
-    if(vdecode)
-        vdecode->start();
+
     XThread::start();
     mux.unlock();
     return true;
 }
 
 void IPlayer::InitView(void *win) {
-      if(videoView)
-        videoView->setRender(win);
+      if(videoView){
+          videoView->Close();
+          videoView->setRender(win);
+      }
+
 }
 
 void IPlayer::Main() {
@@ -81,10 +87,45 @@ void IPlayer::Main() {
         //同步
         //获取音频的pts 告诉视频
         int apts = audioPlay->pts;
-        XLOGE("apts = %d",apts);
+      //  XLOGE("apts = %d",apts);
         vdecode->synPts = apts;
 
         mux.unlock();
         XSleep(2);
     }
+}
+
+void IPlayer::Close() {
+    mux.lock();
+    //2 先关闭主体线程，再清理观察者
+    //同步线程
+    XThread::stop();
+    //解封装
+    if(demux)
+        demux->stop();
+    //解码
+    if(vdecode)
+        vdecode->stop();
+    if(adecode)
+        adecode->stop();
+    //2 清理缓冲队列
+    if(vdecode)
+        vdecode->Clear();
+    if(adecode)
+        adecode->Clear();
+    if(audioPlay)
+        audioPlay->Clear();
+
+    //3 清理资源
+    if(audioPlay)
+        audioPlay->Close();
+    if(videoView)
+        videoView->Close();
+    if(vdecode)
+        vdecode->Close();
+    if(adecode)
+        adecode->Close();
+    if(demux)
+        demux->Close();
+    mux.unlock();
 }

@@ -11,7 +11,10 @@ import javax.microedition.khronos.opengles.GL10;
 public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback ,GLSurfaceView.Renderer{
     public XPlay(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        setRenderer(this);
     }
+    //android 8.0 需要设置
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -35,9 +38,7 @@ public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback ,GLSu
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
      //   super.surfaceCreated(holder);
-
         InitView(holder.getSurface());
-        setRenderer(this);
     }
 
     @Override

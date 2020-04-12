@@ -18,6 +18,7 @@ public:
     virtual bool Open(const char *path);
     virtual bool Start();
     virtual void InitView(void *win);
+    virtual void Close();
     //是否视频硬解码
     bool isHardDecode = true;
 

@@ -13,8 +13,12 @@ extern "C"{
 
 XData FFResample::Resample(XData indata) {
     if(indata.size<=0 || !indata.data) return XData();
-    if(!actx)
+    mux.lock();
+    if(!actx){
+        mux.unlock();
         return XData();
+    }
+
     //XLOGE("indata size is %d",indata.size);
     AVFrame *frame = (AVFrame *)indata.data;
 
@@ -32,11 +36,14 @@ XData FFResample::Resample(XData indata) {
         return XData();
     }
     out.pts = indata.pts;
+    mux.unlock();
     //XLOGE("swr_convert success = %d",len);
     return out;
 }
 
 bool FFResample::init(XParameter indata, XParameter outdata) {
+    Close();
+    mux.lock();
     //音频重采样上下文初始化
     actx = swr_alloc();
     actx = swr_alloc_set_opts(actx,
@@ -49,6 +56,7 @@ bool FFResample::init(XParameter indata, XParameter outdata) {
     int re = swr_init(actx);
     if(re != 0)
     {
+        mux.unlock();
         XLOGE("swr_init failed!");
         return false;
     }
@@ -58,5 +66,15 @@ bool FFResample::init(XParameter indata, XParameter outdata) {
     }
     outChannels = indata.para->channels;
     outFormat = AV_SAMPLE_FMT_S16;
+    mux.unlock();
     return true;
+}
+
+void FFResample::Close() {
+    mux.lock();
+    if(actx)
+    {
+        swr_free(&actx);
+    }
+    mux.unlock();
 }

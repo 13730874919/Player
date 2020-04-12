@@ -14,6 +14,7 @@ extern "C"
     av_jni_set_java_vm(vm,0);
 }
 bool FFDecode::Open(XParameter par,bool isHard){
+    Close();
     if(!par.para)return false;
     AVCodecParameters *p = par.para;
     AVCodec *cd = avcodec_find_decoder(p->codec_id);
@@ -33,7 +34,7 @@ bool FFDecode::Open(XParameter par,bool isHard){
         return false;
     }
     XLOGI("avcodec_find_decoder success!");
-
+    mux.lock();
     //创建上下文
     codec = avcodec_alloc_context3(cd);
     avcodec_parameters_to_context(codec,p);
@@ -42,6 +43,7 @@ bool FFDecode::Open(XParameter par,bool isHard){
     int re = avcodec_open2(codec,0,0);
     if(re != 0)
     {
+        mux.unlock();
         char buf[1024] = {0};
         av_strerror(re,buf,sizeof(buf)-1);
         XLOGE("%s",buf);
@@ -52,9 +54,11 @@ bool FFDecode::Open(XParameter par,bool isHard){
     }else if(codec->codec_type==AVMEDIA_TYPE_AUDIO){
         this->isAudio = true;
     }else{
+        mux.unlock();
         return false;
         XLOGI("error codec_type exit!");
     }
+    mux.unlock();
     XLOGI("avcodec_open2 success!");
     return true;
 }
@@ -62,8 +66,10 @@ static int sendcnt = 0;
 static int reccnt = 0;
 bool FFDecode::SendPacket(XData pkt) {
     if(pkt.size<=0 || !pkt.data)return false;
+    mux.lock();
     if(!codec)
     {
+        mux.unlock();
         return false;
     }
     AVPacket *pack = (AVPacket*)pkt.data;
@@ -72,10 +78,12 @@ bool FFDecode::SendPacket(XData pkt) {
 
     if(re != 0)
     {
+        mux.unlock();
         XLOGI(" avcodec_send_packet error ret=%d", re);
       //  XLOGI(" avcodec_send_packet error sendcnt=%d ",sendcnt);
         return false;
     }
+    mux.unlock();
     return true;
 }
 static double r2d(AVRational r)
@@ -83,7 +91,9 @@ static double r2d(AVRational r)
     return r.num == 0 || r.den == 0 ?0.:(double) r.num/(double)r.den;
 }
 XData FFDecode::RecvFrame() {
+    mux.lock();
     if (!codec) {
+        mux.unlock();
         return XData();
     }
     if (!frame) {
@@ -92,6 +102,7 @@ XData FFDecode::RecvFrame() {
     int re = avcodec_receive_frame(codec, frame);
 
     if (re != 0) {
+        mux.unlock();
         return XData();
     }
 
@@ -112,5 +123,20 @@ XData FFDecode::RecvFrame() {
     d.format = frame->format;
     d.pts = frame->pts;
     memcpy(d.framedatas,frame->data,sizeof(d.framedatas));
+    mux.unlock();
     return d;
+}
+
+void FFDecode::Close() {
+    IDecode::Clear();
+    mux.lock();
+    pts = 0;
+    if(frame)
+        av_frame_free(&frame);
+    if(codec)
+    {
+        avcodec_close(codec);
+        avcodec_free_context(&codec);
+    }
+    mux.unlock();
 }

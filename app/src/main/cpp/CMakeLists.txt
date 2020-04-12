@@ -58,11 +58,14 @@ add_library( # Sets the name of the library.
             FFmpeg/FFDemux.cpp
             FFmpeg/FFDecode.cpp
         FFmpeg/FFResample.cpp
+        FFmpeg/FFPlayerBuilder.cpp
             IPlayer/IDemux.cpp
             IPlayer/IDecode.cpp
         IPlayer/IResample.cpp
         IPlayer/IAudioPlay.cpp
         IPlayer/IPlayer.cpp
+        IPlayer/IPlayerPorxy.cpp
+        IPlayer/IPlayerBuilder.cpp
             IPlayer/IVideoView.cpp
             Tool/XThread.cpp
             Tool/XParameter.cpp

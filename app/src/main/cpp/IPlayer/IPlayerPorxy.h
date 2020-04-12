@@ -1,14 +1,34 @@
+
 //
-// Created by bds on 2020/4/12.
+// Created by Administrator on 2018-03-07.
 //
 
-#ifndef FFMPEG_IPLAYERPORXY_H
-#define FFMPEG_IPLAYERPORXY_H
+#ifndef XPLAY_IPLAYERPORXY_H
+#define XPLAY_IPLAYERPORXY_H
 
 
-class IPlayerPorxy {
+#include "IPlayer.h"
+#include <mutex>
+class IPlayerPorxy: public IPlayer
+{
+public:
+    static IPlayerPorxy*Get()
+    {
+        static IPlayerPorxy px;
+        return &px;
+    }
+    void Init(void *vm = 0);
 
+    virtual bool Open(const char *path);
+    virtual void Close();
+    virtual bool Start();
+    virtual void InitView(void *win);
+
+protected:
+    IPlayerPorxy(){}
+    IPlayer *player = 0;
+    std::mutex mux;
 };
 
 
-#endif //FFMPEG_IPLAYERPORXY_H
+#endif //XPLAY_IPLAYERPORXY_H

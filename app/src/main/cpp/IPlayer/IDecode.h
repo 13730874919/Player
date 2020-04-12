@@ -17,7 +17,8 @@ public:
     virtual bool SendPacket(XData pkt)=0;
     //获取解码结果
     virtual XData RecvFrame()=0;
-
+    virtual void Close()=0;
+    virtual void Clear();
     void Update(XData data) override;
 
     bool isAudio = false;

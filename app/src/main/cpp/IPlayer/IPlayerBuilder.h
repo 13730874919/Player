@@ -1,16 +1,24 @@
 //
-// Created by bds on 2020/4/11.
+// Created by Administrator on 2018-03-07.
 //
 
-#ifndef FFMPEG_IPLAYERBUILDER_H
-#define FFMPEG_IPLAYERBUILDER_H
+#ifndef XPLAY_IPLAYERBUILDER_H
+#define XPLAY_IPLAYERBUILDER_H
 
+#include "IPlayer.h"
 
-
-class IPlayerBuilder {
-
+class IPlayerBuilder
+{
+public:
+    virtual IPlayer *BuilderPlayer(unsigned char index=0);
+protected:
+    virtual IDemux *CreateDemux() = 0;
+    virtual IDecode *CreateDecode() = 0;
+    virtual IResample *CreateResample() = 0;
+    virtual IVideoView *CreateVideoView()  = 0;
+    virtual IAudioPlay *CreateAudioPlay() = 0;
+    virtual IPlayer *CreatePlayer(unsigned char index=0) = 0;
 };
 
 
-
-#endif //FFMPEG_IPLAYERBUILDER_H
+#endif //XPLAY_IPLAYERBUILDER_H

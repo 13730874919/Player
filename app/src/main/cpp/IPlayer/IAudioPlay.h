@@ -16,6 +16,8 @@ public:
     virtual bool StartPlay(XParameter out) = 0;
     void Update(XData data) override;
     virtual XData GetData();
+    virtual void Close()=0;
+    virtual void Clear();
     int  maxFrame = 100;
     int pts=0;
 protected:
