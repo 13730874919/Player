@@ -46,7 +46,6 @@ XData FFDemux::Read() {
         av_packet_free(&pkt);
         return XData();
     }
-    XLOGI("ffdemuxpts==%d",pkt->pts);
     data.data = (unsigned char *)pkt;
     data.size = pkt->size;
     if(pkt->stream_index == audioStream)
@@ -62,6 +61,10 @@ XData FFDemux::Read() {
         av_packet_free(&pkt);
         return XData();
     }
+        //转换pts
+        pkt->pts = pkt->pts * (1000*r2d(ic->streams[pkt->stream_index]->time_base));
+        pkt->dts = pkt->dts * (1000*r2d(ic->streams[pkt->stream_index]->time_base));
+        data.pts = (int)pkt->pts;
     return data;
 }
 

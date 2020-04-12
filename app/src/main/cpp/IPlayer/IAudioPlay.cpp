@@ -33,6 +33,7 @@ XData IAudioPlay::GetData() {
             d = frames.front();
             frames.pop_front();
             frameMute.unlock();
+            pts = d.pts;
             return d;
         }
         frameMute.unlock();

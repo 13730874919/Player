@@ -17,6 +17,7 @@ public:
     void Update(XData data) override;
     virtual XData GetData();
     int  maxFrame = 100;
+    int pts=0;
 protected:
     std::list <XData> frames;
     std::mutex frameMute;

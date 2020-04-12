@@ -12,7 +12,7 @@
 #include "IVideoView.h"
 #include "IAudioPlay.h"
 
-class IPlayer {
+class IPlayer : public IObserver{
 public:
     static IPlayer *Get(unsigned char index=0);
     virtual bool Open(const char *path);
@@ -21,7 +21,10 @@ public:
     //是否视频硬解码
     bool isHardDecode = true;
 
+protected:
+    void Main() override;
 
+public:
     IDemux *demux = 0;
     IDecode *vdecode = 0;
     IDecode *adecode = 0;
@@ -30,6 +33,7 @@ public:
     IAudioPlay *audioPlay = 0;
 protected:
     IPlayer(){};
+    std::mutex mux;
     XParameter outPara;
 };
 
