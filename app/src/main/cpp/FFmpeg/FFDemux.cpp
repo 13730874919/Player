@@ -31,18 +31,22 @@ bool FFDemux::Open(const  char *url) {
     GetAPara();
     return true;
 }
-
+static double r2d(AVRational r)
+{
+    return r.num == 0 || r.den == 0 ?0.:(double) r.num/(double)r.den;
+}
+static int cnt =0;
 XData FFDemux::Read() {
     if(!ic)return XData();
     XData data;
     AVPacket *pkt = av_packet_alloc();
     int re = av_read_frame(ic,pkt);
     if(re!=0){
-       // XLOGE("av_read_frame read failed %d",re);
+        XLOGE("av_read_frame read failed %d",re);
         av_packet_free(&pkt);
         return XData();
     }
-  //  XLOGI(" FFDemux  pkt.siz=%d data", pkt->size);
+    XLOGI("ffdemuxpts==%d",pkt->pts);
     data.data = (unsigned char *)pkt;
     data.size = pkt->size;
     if(pkt->stream_index == audioStream)
@@ -58,9 +62,6 @@ XData FFDemux::Read() {
         av_packet_free(&pkt);
         return XData();
     }
-   data.pts = pkt->pts;
-
-  //  XLOGI("pk->size===%d  total===%d  pts==%d",pkt->size,total,pkt->pts);
     return data;
 }
 
@@ -68,13 +69,15 @@ FFDemux::FFDemux() {
     static bool isFirst = true;
     if(isFirst){
         isFirst = false;
+        XLOGE("av_register_all ");
     //注册封装器
         av_register_all();
+
+        avformat_network_init();
         //注册解码器
         avcodec_register_all();
         //初始化网络
 
-        avformat_network_init();
     }
 }
 
@@ -84,7 +87,7 @@ XParameter FFDemux::GetVPara() {
         return XParameter();
     }
     //获取了视频流索引
-    int re = av_find_best_stream(ic, AVMEDIA_TYPE_VIDEO, -1, -1, 0, 0);
+    int re = av_find_best_stream(ic, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0);
     if (re < 0) {
         XLOGE("av_find_best_stream failed!");
         return XParameter();
@@ -103,7 +106,7 @@ XParameter FFDemux::GetAPara() {
         return XParameter();
     }
     //获取了音频流索引
-    int re = av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO, -1, -1, 0, 0);
+    int re = av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO, -1, -1, NULL, 0);
     if (re < 0) {
         XLOGE("av_find_best_stream failed!");
         return XParameter();

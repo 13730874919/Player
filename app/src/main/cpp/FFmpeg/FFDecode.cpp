@@ -78,7 +78,10 @@ bool FFDecode::SendPacket(XData pkt) {
     }
     return true;
 }
-
+static double r2d(AVRational r)
+{
+    return r.num == 0 || r.den == 0 ?0.:(double) r.num/(double)r.den;
+}
 XData FFDecode::RecvFrame() {
     if (!codec) {
         return XData();
@@ -105,7 +108,9 @@ XData FFDecode::RecvFrame() {
         //样本字节数 * 单通道样本数 * 通道数
         d.size = av_get_bytes_per_sample((AVSampleFormat)frame->format)*frame->nb_samples*2;
     }
+
     d.format = frame->format;
+    d.pts = frame->pts;
     memcpy(d.framedatas,frame->data,sizeof(d.framedatas));
     return d;
 }
