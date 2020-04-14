@@ -140,3 +140,11 @@ void FFDecode::Close() {
     }
     mux.unlock();
 }
+
+void FFDecode::Clear() {
+    IDecode::Clear();
+    mux.lock();
+    if(codec)
+        avcodec_flush_buffers(codec);
+    mux.unlock();
+}

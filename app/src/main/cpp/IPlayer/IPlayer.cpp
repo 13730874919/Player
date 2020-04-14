@@ -108,6 +108,8 @@ void IPlayer::Close() {
         vdecode->stop();
     if(adecode)
         adecode->stop();
+    if(audioPlay)
+        audioPlay->stop();
     //2 清理缓冲队列
     if(vdecode)
         vdecode->Clear();
@@ -127,5 +129,99 @@ void IPlayer::Close() {
         adecode->Close();
     if(demux)
         demux->Close();
+    mux.unlock();
+}
+
+double IPlayer::PlayPos() {
+    double pos = 0.0;
+    mux.lock();
+
+    int total = 0;
+    if(demux)
+        total = demux->total;
+    if(total>0)
+    {
+        if(vdecode)
+        {
+            pos = (double)vdecode->pts/(double)total;
+        }
+    }
+    mux.unlock();
+    return pos;
+}
+
+bool IPlayer::Seek(double pos) {
+    bool re = false;
+    if(!demux) return false;
+
+    //暂停所有线程
+    SetPause(true);
+    mux.lock();
+    //清理缓冲
+    //2 清理缓冲队列
+    if(vdecode)
+        vdecode->Clear(); //清理缓冲队列，清理ffmpeg的缓冲
+    if(adecode)
+        adecode->Clear();
+    if(audioPlay)
+        audioPlay->Clear();
+
+
+    re = demux->Seek(pos); //seek跳转到关键帧
+    if(!vdecode)
+    {
+        mux.unlock();
+        SetPause(false);
+        return re;
+    }
+    //解码到实际需要显示的帧
+    int seekPts = pos*demux->total;
+    while(!isExit)
+    {
+        XData pkt = demux->Read();
+        if(pkt.size<=0)break;
+        if(pkt.isAudio)
+        {
+            if(pkt.pts < seekPts)
+            {
+                pkt.Drop();
+                continue;
+            }
+            //写入缓冲队列
+            demux->Notify(pkt);
+            continue;
+        }
+
+        //解码需要显示的帧之前的数据
+        vdecode->SendPacket(pkt);
+        pkt.Drop();
+        XData data = vdecode->RecvFrame();
+        if(data.size <=0)
+        {
+            continue;
+        }
+        if(data.pts >= seekPts)
+        {
+            //vdecode->Notify(data);
+            break;
+        }
+    }
+    mux.unlock();
+
+    SetPause(false);
+    return re;
+}
+
+void IPlayer::SetPause(bool isP) {
+    mux.lock();
+    XThread::SetPause(isP);
+    if(demux)
+        demux->SetPause(isP);
+    if(vdecode)
+        vdecode->SetPause(isP);
+    if(adecode)
+        adecode->SetPause(isP);
+    if(audioPlay)
+        audioPlay->SetPause(isP);
     mux.unlock();
 }

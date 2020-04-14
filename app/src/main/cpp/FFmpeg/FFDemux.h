@@ -15,6 +15,8 @@ public:
     virtual XData Read();
     virtual XParameter GetAPara() override;
 
+    bool Seek(double pos) override;
+
     void Close() override;
 
     FFDemux();

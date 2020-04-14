@@ -10,17 +10,34 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.SeekBar;
 
 import androidx.core.app.ActivityCompat;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements Runnable{
 
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
     }
 
+    @Override
+    public void run() {
+        for(;;)
+        {
+            seek.setProgress((int)(PlayPos()*1000));
+            try {
+                Thread.sleep( 40 );
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     private Button bt;
+    private SeekBar seek;
+    private Thread th;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +47,24 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
         checkPermission(this);
+        seek = findViewById( R.id.aplayseek );
+        seek.setMax(1000);
+        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Seek( (double)seekBar.getProgress()/(double)seekBar.getMax() );
+            }
+        });
         bt = findViewById( R.id.open_button );
         bt.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -43,6 +78,9 @@ public class MainActivity extends Activity {
 
             }
         } );
+        //启动播放进度线程
+        th = new Thread(this);
+        th.start();
     }
 
             private void checkPermission(Activity activity) {
@@ -66,6 +104,6 @@ public class MainActivity extends Activity {
 
             }
 
-
-
+    public native double PlayPos();
+    public native void Seek(double pos);
 }

@@ -25,8 +25,14 @@ void IAudioPlay::Update(XData data) {
 
 XData IAudioPlay::GetData() {
     XData d;
+    isRunning = true;
     while(!isExit)
     {
+        if(IsPause())
+        {
+            XSleep(2);
+            continue;
+        }
         frameMute.lock();
         if(!frames.empty())
         {
@@ -39,6 +45,7 @@ XData IAudioPlay::GetData() {
         frameMute.unlock();
         XSleep(1);
     }
+    isRunning = true;
     return d;
 }
 

@@ -15,6 +15,7 @@ void XSleep(int mis){
 bool XThread::start() {
 
     isExit= false;
+    isPause = false;
     thread th(&XThread::threadMain,this);
     th.detach();
     return true;
@@ -43,4 +44,17 @@ void XThread::threadMain() {
 
 void XThread::Main() {
 
+}
+
+void XThread::SetPause(bool isP) {
+    isPause = isP;
+    //等待100毫秒
+    for(int i = 0; i < 10; i++)
+    {
+        if(isPausing == isP)
+        {
+            break;
+        }
+        XSleep(10);
+    }
 }

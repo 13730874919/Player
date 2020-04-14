@@ -50,4 +50,16 @@ Java_com_bds_ffmpeg_OpenUrl_Open(JNIEnv *env, jobject thiz, jstring url_) {
     IPlayerPorxy::Get()->Open(url);
     IPlayerPorxy::Get()->Start();
     env->ReleaseStringUTFChars(url_, url);
+}extern "C"
+JNIEXPORT jdouble JNICALL
+Java_com_bds_ffmpeg_MainActivity_PlayPos(JNIEnv *env, jobject thiz) {
+    return IPlayerPorxy::Get()->PlayPos();
+}extern "C"
+JNIEXPORT void JNICALL
+Java_com_bds_ffmpeg_MainActivity_Seek(JNIEnv *env, jobject thiz, jdouble pos) {
+    IPlayerPorxy::Get()->Seek(pos);
+}extern "C"
+JNIEXPORT void JNICALL
+Java_com_bds_ffmpeg_XPlay_PlayOrPause(JNIEnv *env, jobject thiz) {
+    IPlayerPorxy::Get()->SetPause(!IPlayerPorxy::Get()->IsPause());
 }

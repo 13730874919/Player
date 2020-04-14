@@ -19,8 +19,11 @@ public:
     virtual bool Start();
     virtual void InitView(void *win);
     virtual void Close();
+    virtual double PlayPos();
     //是否视频硬解码
     bool isHardDecode = true;
+    virtual bool Seek(double pos);
+    virtual void SetPause(bool isP);
 
 protected:
     void Main() override;

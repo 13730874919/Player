@@ -32,7 +32,7 @@
             />
         <SeekBar
             android:id="@+id/aplayseek"
-            android:layout_width="800dp"
+            android:layout_width="670dp"
             android:layout_height="match_parent" />
 
     </LinearLayout>

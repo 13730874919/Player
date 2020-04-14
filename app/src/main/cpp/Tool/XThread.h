@@ -10,8 +10,15 @@ class XThread {
 public:
 virtual bool start();
 virtual void stop();
-
+virtual void SetPause(bool isP);
+virtual bool IsPause()
+{
+    isPausing = isPause;
+    return isPause;
+}
 protected:
+bool isPause = false;
+bool isPausing = false;
 bool isRunning=false;
 bool isExit = false;
 virtual void Main();

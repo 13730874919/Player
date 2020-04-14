@@ -29,6 +29,11 @@ void IDecode::Main()
 {
     while(!isExit)
     {
+        if(IsPause())
+        {
+            XSleep(2);
+            continue;
+        }
         packsMutex.lock();
         //判断音视频同步
         if(!isAudio && synPts > 0)

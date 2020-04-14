@@ -17,6 +17,8 @@ public:
     virtual XData Read()=0;
     virtual XParameter GetVPara()=0;
     virtual XParameter GetAPara()=0;
+    //seek 位置 pos 0.0~1.0
+    virtual bool Seek(double pos)=0;
     virtual void Close()=0;
     int total=0;
 protected:
