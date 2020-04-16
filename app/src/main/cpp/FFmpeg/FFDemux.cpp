@@ -167,8 +167,7 @@ bool FFDemux::Seek(double pos) {
     //清理读取的缓冲
     avformat_flush(ic);
     long long seekPts = 0;
-
-    seekPts = total*pos*r2d(ic->streams[videoStream]->time_base)*1000;
+    seekPts = total*pos/r2d(ic->streams[videoStream]->time_base)/1000;
     XLOGE("demux seekpts==%lld",seekPts);
     //往后跳转到关键帧
     re = av_seek_frame(ic,videoStream,seekPts,AVSEEK_FLAG_FRAME|AVSEEK_FLAG_BACKWARD);
