@@ -174,38 +174,40 @@ bool IPlayer::Seek(double pos) {
         SetPause(false);
         return re;
     }
-    //解码到实际需要显示的帧
-    int seekPts = pos*demux->total;
-    while(!isExit)
-    {
-        XData pkt = demux->Read();
-        if(pkt.size<=0)break;
-        if(pkt.isAudio)
-        {
-            if(pkt.pts < seekPts)
-            {
-                pkt.Drop();
-                continue;
-            }
-            //写入缓冲队列
-            demux->Notify(pkt);
-            continue;
-        }
-
-        //解码需要显示的帧之前的数据
-        vdecode->SendPacket(pkt);
-        pkt.Drop();
-        XData data = vdecode->RecvFrame();
-        if(data.size <=0)
-        {
-            continue;
-        }
-        if(data.pts >= seekPts)
-        {
-            //vdecode->Notify(data);
-            break;
-        }
-    }
+//    //解码到实际需要显示的帧
+//    long long seekPts = pos*demux->total;
+//    XLOGE("seekpts==%lld",seekPts);
+//    while(!isExit)
+//    {
+//        XData pkt = demux->Read();
+//        if(pkt.size<=0)break;
+//        if(pkt.isAudio)
+//        {
+//            if(pkt.pts < seekPts)
+//            {
+//                pkt.Drop();
+//                continue;
+//            }
+//            //写入缓冲队列
+//            demux->Notify(pkt);
+//            continue;
+//        }
+//
+//        //解码需要显示的帧之前的数据
+//        vdecode->SendPacket(pkt);
+//        pkt.Drop();
+//        XData data = vdecode->RecvFrame();
+//        if(data.size <=0)
+//        {
+//            continue;
+//        }
+//        XLOGE("data.pts==%d",data.pts);
+//        if(data.pts >= seekPts)
+//        {
+//            //vdecode->Notify(data);
+//            break;
+//        }
+//    }
     mux.unlock();
 
     SetPause(false);

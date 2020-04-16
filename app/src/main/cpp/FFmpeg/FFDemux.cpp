@@ -112,6 +112,9 @@ XParameter FFDemux::GetVPara() {
     }
     videoStream = re;
     XParameter para;
+//    if(ic->streams[videoStream]->duration>0){
+//        this->total =ic->streams[videoStream]->duration/(AV_TIME_BASE/1000);
+//    }
     para.para = ic->streams[re]->codecpar;
 
     mux.unlock();
@@ -164,8 +167,9 @@ bool FFDemux::Seek(double pos) {
     //清理读取的缓冲
     avformat_flush(ic);
     long long seekPts = 0;
-    seekPts = ic->streams[videoStream]->duration*pos;
 
+    seekPts = total*pos*r2d(ic->streams[videoStream]->time_base)*1000;
+    XLOGE("demux seekpts==%lld",seekPts);
     //往后跳转到关键帧
     re = av_seek_frame(ic,videoStream,seekPts,AVSEEK_FLAG_FRAME|AVSEEK_FLAG_BACKWARD);
     mux.unlock();

@@ -18,7 +18,9 @@ public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback ,GLSu
 
     @Override
     public void onClick(View v) {
-        PlayOrPause();
+        if(mXPlayOnclickLister !=null){
+            mXPlayOnclickLister.onXPlayOnclick();
+        }
     }
     //android 8.0 需要设置
 
@@ -26,7 +28,6 @@ public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback ,GLSu
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 
     }
-    public native void PlayOrPause();
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
 
@@ -56,6 +57,12 @@ public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback ,GLSu
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
      //   super.surfaceChanged(holder, format, w, h);
     }
-
+    void setXPlayOnclickLister(XPlayOnclickLister x){
+        mXPlayOnclickLister = x;
+    }
+    private XPlayOnclickLister mXPlayOnclickLister;
     private native void InitView(Object obj);
+    interface XPlayOnclickLister{
+        void onXPlayOnclick();
+    }
 }

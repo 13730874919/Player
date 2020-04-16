@@ -58,8 +58,24 @@ Java_com_bds_ffmpeg_MainActivity_PlayPos(JNIEnv *env, jobject thiz) {
 JNIEXPORT void JNICALL
 Java_com_bds_ffmpeg_MainActivity_Seek(JNIEnv *env, jobject thiz, jdouble pos) {
     IPlayerPorxy::Get()->Seek(pos);
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_bds_ffmpeg_MainActivity_Open(JNIEnv *env, jobject thiz, jstring url) {
+    // TODO: implement Open()
+    const char *jniurl = env->GetStringUTFChars(url, 0);
+    IPlayerPorxy::Get()->Open(jniurl);
+    IPlayerPorxy::Get()->Start();
+    env->ReleaseStringUTFChars(url, jniurl);
 }extern "C"
 JNIEXPORT void JNICALL
-Java_com_bds_ffmpeg_XPlay_PlayOrPause(JNIEnv *env, jobject thiz) {
+Java_com_bds_ffmpeg_VideoActivity_PlayOrPause(JNIEnv *env, jobject thiz) {
+    // TODO: implement PlayOrPause()
+
+    IPlayerPorxy::Get()->SetPause(!IPlayerPorxy::Get()->IsPause());
+}extern "C"
+JNIEXPORT void JNICALL
+Java_com_bds_ffmpeg_MainActivity_PlayOrPause(JNIEnv *env, jobject thiz) {
+    // TODO: implement PlayOrPause()
     IPlayerPorxy::Get()->SetPause(!IPlayerPorxy::Get()->IsPause());
 }

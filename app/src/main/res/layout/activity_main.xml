@@ -7,6 +7,7 @@
     tools:context=".MainActivity">
 
     <com.bds.ffmpeg.XPlay
+        android:id="@+id/myplay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
     <FrameLayout
@@ -23,16 +24,9 @@
 
         android:orientation="horizontal"
         tools:ignore="UselessParent">
-
-        <Button
-            android:id="@+id/open_button"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:text="Open"
-            />
         <SeekBar
             android:id="@+id/aplayseek"
-            android:layout_width="670dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
     </LinearLayout>

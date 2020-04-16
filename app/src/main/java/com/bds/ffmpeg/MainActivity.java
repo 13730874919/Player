@@ -1,20 +1,17 @@
 package com.bds.ffmpeg;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.SeekBar;
 
-import androidx.core.app.ActivityCompat;
-
-public class MainActivity extends Activity implements Runnable{
+public class MainActivity extends Activity implements Runnable, XPlay.XPlayOnclickLister{
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -35,19 +32,19 @@ public class MainActivity extends Activity implements Runnable{
 
     }
 
-    private Button bt;
     private SeekBar seek;
     private Thread th;
+    private XPlay play;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);//隐藏标题
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);//设置全屏
-
         setContentView(R.layout.activity_main);
-        checkPermission(this);
         seek = findViewById( R.id.aplayseek );
+        play = findViewById(R.id.myplay);
+        play.setXPlayOnclickLister(this);
         seek.setMax(1000);
         seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -65,45 +62,41 @@ public class MainActivity extends Activity implements Runnable{
                 Seek( (double)seekBar.getProgress()/(double)seekBar.getMax() );
             }
         });
-        bt = findViewById( R.id.open_button );
-        bt.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.e("XPlay","open button click!");
-                //打开选择路径窗口
-                Intent intent = new Intent();
-                intent.setClass( MainActivity.this ,OpenUrl.class);
-                startActivity( intent );
-
-
-            }
-        } );
+        Intent intent = getIntent();
+        String path =intent.getStringExtra("path");
+        Open(path);
         //启动播放进度线程
         th = new Thread(this);
         th.start();
     }
-
-            private void checkPermission(Activity activity) {
-                // Storage Permissions
-                final int REQUEST_EXTERNAL_STORAGE = 1;
-                String[] PERMISSIONS_STORAGE = {
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-                try {
-                    //检测是否有写的权限
-                    int permission = ActivityCompat.checkSelfPermission(MainActivity.this,
-                            "android.permission.WRITE_EXTERNAL_STORAGE");
-                    if (permission != PackageManager.PERMISSION_GRANTED) {
-                        // 没有写的权限，去申请写的权限，会弹出对话框
-                        ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            mHandler.removeMessages(1);
+            if(seek.getVisibility()==View.VISIBLE) {
+                seek.setVisibility(View.INVISIBLE);
+            }else {
+                seek.setVisibility(View.VISIBLE);
             }
+        }
+    };
+    private  long startTime =0;
+    @Override
+    public void onXPlayOnclick() {
+        mHandler.sendEmptyMessageDelayed(1,200);
+        if(startTime!=0) {
+            long timer = (SystemClock.elapsedRealtime() - startTime);
+            if(timer<200){
+                mHandler.removeMessages(1);
+                PlayOrPause();
+            }
+        }
+        startTime = SystemClock.elapsedRealtime();
+    }
 
+    public native void PlayOrPause();
+    public native void Open(String url);
     public native double PlayPos();
     public native void Seek(double pos);
 }
