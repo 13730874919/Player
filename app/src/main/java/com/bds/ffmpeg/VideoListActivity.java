@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VideoActivity extends Activity implements ListView.OnItemClickListener {
+public class VideoListActivity extends Activity implements ListView.OnItemClickListener {
 
 
     private String TAG = "XPLAY";
@@ -57,7 +57,7 @@ public class VideoActivity extends Activity implements ListView.OnItemClickListe
         Video item = datalist.get(position);
         String path = item.getPath();
         Log.d(TAG,"patch==="+path);
-        Intent intent5 = new Intent(this,MainActivity.class);
+        Intent intent5 = new Intent(this, VideoViewActivity.class);
         intent5.putExtra("path",path);
         startActivity(intent5);
 
