@@ -1,0 +1,2 @@
+int id salient_video_fullscreen_id 0x7f0b0001
+int id salient_video_tiny_id 0x7f0b0002

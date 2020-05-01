@@ -79,3 +79,47 @@ Java_com_bds_ffmpeg_VideoViewActivity_PlayOrPause(JNIEnv *env, jobject thiz) {
     // TODO: implement PlayOrPause()
     IPlayerPorxy::Get()->SetPause(!IPlayerPorxy::Get()->IsPause());
 }
+
+
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_bds_ffmpeg_UPlayer_InitView(JNIEnv *env, jobject thiz, jobject obj) {
+    // TODO: implement InitView()
+    ANativeWindow *win = ANativeWindow_fromSurface(env,obj);
+    // view->setRender(win);
+    IPlayerPorxy::Get()->InitView(win);
+}extern "C"
+JNIEXPORT void JNICALL
+Java_com_bds_ffmpeg_UPlayer_Open(JNIEnv *env, jobject thiz, jstring url) {
+    // TODO: implement Open()
+    const char *jniurl = env->GetStringUTFChars(url, 0);
+    IPlayerPorxy::Get()->Open(jniurl);
+    env->ReleaseStringUTFChars(url, jniurl);
+}extern "C"
+JNIEXPORT void JNICALL
+Java_com_bds_ffmpeg_UPlayer_start(JNIEnv *env, jobject thiz) {
+    // TODO: implement start()
+    IPlayerPorxy::Get()->Start();
+}extern "C"
+JNIEXPORT void JNICALL
+Java_com_bds_ffmpeg_UPlayer_Seek(JNIEnv *env, jobject thiz, jdouble pos) {
+    // TODO: implement Seek()
+    IPlayerPorxy::Get()->Seek(pos);
+}extern "C"
+JNIEXPORT void JNICALL
+Java_com_bds_ffmpeg_UPlayer_Pause(JNIEnv *env, jobject thiz) {
+    // TODO: implement Pause()
+    IPlayerPorxy::Get()->SetPause(false);
+}extern "C"
+JNIEXPORT void JNICALL
+Java_com_bds_ffmpeg_UPlayer_play(JNIEnv *env, jobject thiz) {
+    // TODO: implement play()
+    IPlayerPorxy::Get()->SetPause(true);
+}extern "C"
+JNIEXPORT jdouble JNICALL
+Java_com_bds_ffmpeg_UPlayer_GetPos(JNIEnv *env, jobject thiz) {
+    // TODO: implement GetPos()
+    return IPlayerPorxy::Get()->PlayPos();
+}
