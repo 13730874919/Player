@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "D:\\ArtPlayer-master\\artplayer-ui\\build\\intermediates\\res\\merged\\release\\drawable-hdpi-v4\\salient_volume.png",
+        "source": "D:\\ArtPlayer-master\\artplayer-ui\\src\\main\\res\\drawable-hdpi\\salient_volume.png"
+    },
+    {
+        "merged": "D:\\ArtPlayer-master\\artplayer-ui\\build\\intermediates\\res\\merged\\release\\drawable-hdpi-v4\\salient_brightness.png",
+        "source": "D:\\ArtPlayer-master\\artplayer-ui\\src\\main\\res\\drawable-hdpi\\salient_brightness.png"
+    }
+]

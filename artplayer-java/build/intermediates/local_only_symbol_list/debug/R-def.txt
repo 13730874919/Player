@@ -1,0 +1,4 @@
+R_DEF: Internal format may change without notice
+local
+id salient_video_fullscreen_id
+id salient_video_tiny_id

@@ -9,7 +9,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".VideoListActivity">
+<!--        <activity android:name=".VideoListActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.VIEW"></action>-->
+<!--                <category android:name="android.intent.category.DEFAULT"></category>-->
+<!--                <data android:mimeType="video/mp4"></data>-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+
+        <activity android:name=".universalvideoview.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,0 +1,42 @@
+[
+    {
+        "merged": "D:\\ArtPlayer-master\\artplayer-ui\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\salient_icon_pause.png",
+        "source": "D:\\ArtPlayer-master\\artplayer-ui\\src\\main\\res\\drawable-xhdpi\\salient_icon_pause.png"
+    },
+    {
+        "merged": "D:\\ArtPlayer-master\\artplayer-ui\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\salient_icon_back.png",
+        "source": "D:\\ArtPlayer-master\\artplayer-ui\\src\\main\\res\\drawable-xhdpi\\salient_icon_back.png"
+    },
+    {
+        "merged": "D:\\ArtPlayer-master\\artplayer-ui\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\salient_icon_volume.png",
+        "source": "D:\\ArtPlayer-master\\artplayer-ui\\src\\main\\res\\drawable-xhdpi\\salient_icon_volume.png"
+    },
+    {
+        "merged": "D:\\ArtPlayer-master\\artplayer-ui\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\salient_icon_narrow.png",
+        "source": "D:\\ArtPlayer-master\\artplayer-ui\\src\\main\\res\\drawable-xhdpi\\salient_icon_narrow.png"
+    },
+    {
+        "merged": "D:\\ArtPlayer-master\\artplayer-ui\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\salient_volume.png",
+        "source": "D:\\ArtPlayer-master\\artplayer-ui\\src\\main\\res\\drawable-xhdpi\\salient_volume.png"
+    },
+    {
+        "merged": "D:\\ArtPlayer-master\\artplayer-ui\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\salient_icon_full_screen.png",
+        "source": "D:\\ArtPlayer-master\\artplayer-ui\\src\\main\\res\\drawable-xhdpi\\salient_icon_full_screen.png"
+    },
+    {
+        "merged": "D:\\ArtPlayer-master\\artplayer-ui\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\salient_icon_volume_hover.png",
+        "source": "D:\\ArtPlayer-master\\artplayer-ui\\src\\main\\res\\drawable-xhdpi\\salient_icon_volume_hover.png"
+    },
+    {
+        "merged": "D:\\ArtPlayer-master\\artplayer-ui\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\salient_icon_start.png",
+        "source": "D:\\ArtPlayer-master\\artplayer-ui\\src\\main\\res\\drawable-xhdpi\\salient_icon_start.png"
+    },
+    {
+        "merged": "D:\\ArtPlayer-master\\artplayer-ui\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\salient_brightness.png",
+        "source": "D:\\ArtPlayer-master\\artplayer-ui\\src\\main\\res\\drawable-xhdpi\\salient_brightness.png"
+    },
+    {
+        "merged": "D:\\ArtPlayer-master\\artplayer-ui\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\salient_bg_loading.png",
+        "source": "D:\\ArtPlayer-master\\artplayer-ui\\src\\main\\res\\drawable-xhdpi\\salient_bg_loading.png"
+    }
+]

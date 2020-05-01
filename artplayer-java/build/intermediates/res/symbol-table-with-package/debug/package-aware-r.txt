@@ -1,0 +1,3 @@
+org.salient.artplayer
+id salient_video_fullscreen_id
+id salient_video_tiny_id
