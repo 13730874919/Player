@@ -17,6 +17,8 @@ import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.bds.ffmpeg.universalvideoview.UniversalVideoView;
+
 public class VideoViewActivity extends Activity implements Runnable, XPlay.XPlayOnclickLister,View.OnTouchListener{
     private final String TAG = "XPLAY";
 
@@ -129,7 +131,8 @@ public class VideoViewActivity extends Activity implements Runnable, XPlay.XPlay
     private View mVideoView;
     private SeekBar seek;
     private Thread th;
-    private XPlay play;
+    private UniversalVideoView play;
+    private UPlayer mplayer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,12 +142,13 @@ public class VideoViewActivity extends Activity implements Runnable, XPlay.XPlay
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);//设置全屏
         mVideoView = LayoutInflater.from(this).inflate(R.layout.activity_main, null);
         setContentView(mVideoView);
+        mplayer = new UPlayer();
         brightnessTextView= findViewById(R.id.light);
         VolumTextView= findViewById(R.id.volume);
         seek = findViewById( R.id.aplayseek );
         play = findViewById(R.id.myplay);
-        play.setOnTouchListener(this);
-        play.setXPlayOnclickLister(this);
+//        play.setOnTouchListener(this);
+//        play.setXPlayOnclickLister(this);
         seek.setMax(1000);
         seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -168,7 +172,9 @@ public class VideoViewActivity extends Activity implements Runnable, XPlay.XPlay
                 .getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         Intent intent = getIntent();
         String path =intent.getStringExtra("path");
-        Open(path);
+        mplayer.setDataSource(this,path);
+        mplayer.prepare();
+        mplayer.start();
         //启动播放进度线程
         th = new Thread(this);
         th.start();
@@ -198,19 +204,16 @@ public class VideoViewActivity extends Activity implements Runnable, XPlay.XPlay
             long timer = (SystemClock.elapsedRealtime() - startTime);
             if(timer<200){
                 mHandler.removeMessages(1);
-                PlayOrPause();
+              //  PlayOrPause();
             }
         }
         startTime = SystemClock.elapsedRealtime();
     }
 
-    public native void PlayOrPause();
+   // public native void PlayOrPause();
     public native void Open(String url);
     public native double PlayPos();
     public native void Seek(double pos);
-    static {
-        System.loadLibrary("native-lib");
-    }
 
     @Override
     public void run() {

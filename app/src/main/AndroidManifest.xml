@@ -22,6 +22,8 @@
 <!--        </activity>-->
 
         <activity android:name=".universalvideoview.MainActivity">
+
+<!--                    <activity android:name=".VideoListActivity">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

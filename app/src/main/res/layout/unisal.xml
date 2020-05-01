@@ -15,16 +15,14 @@
         <com.bds.ffmpeg.universalvideoview.UniversalVideoView
             android:id="@+id/videoView"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            app:uvv_autoRotation="true"
-            app:uvv_fitXY="false" />
+            android:layout_height="fill_parent" />
 
-        <com.bds.ffmpeg.universalvideoview.UniversalMediaController
-            android:id="@+id/media_controller"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            app:uvv_scalable="true" />
+<!--        <com.bds.ffmpeg.universalvideoview.UniversalMediaController-->
+<!--            android:id="@+id/media_controller"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="fill_parent"-->
+<!--            android:visibility="gone"-->
+<!--            app:uvv_scalable="true" />-->
 
     </FrameLayout>
 

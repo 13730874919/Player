@@ -7,7 +7,7 @@
     android:background="#0099cc"
     >
 
-    <com.bds.ffmpeg.XPlay
+    <com.bds.ffmpeg.universalvideoview.UniversalVideoView
         android:id="@+id/myplay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
