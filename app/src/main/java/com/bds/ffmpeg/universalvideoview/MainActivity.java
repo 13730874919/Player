@@ -53,7 +53,7 @@ public class MainActivity extends Activity implements UniversalVideoView.VideoVi
         mVideoLayout = findViewById(R.id.video_layout);
         mBottomLayout = findViewById(R.id.bottom_layout);
         mVideoView = (UniversalVideoView) findViewById(R.id.videoView);
-        mMediaController = (UniversalMediaController) findViewById(R.id.media_controller);
+        mMediaController = new UniversalMediaController(this);
         mVideoView.setMediaController(mMediaController);
         setVideoAreaSize();
         mVideoView.setVideoViewCallback(this);
@@ -66,7 +66,8 @@ public class MainActivity extends Activity implements UniversalVideoView.VideoVi
                     mVideoView.seekTo(mSeekPosition);
                 }
                 mVideoView.start();
-                mMediaController.setTitle("Big Buck Bunny");
+                mMediaController.setVisibility(View.GONE);
+           //     mMediaController.setTitle("Big Buck Bunny");
             }
         });
 

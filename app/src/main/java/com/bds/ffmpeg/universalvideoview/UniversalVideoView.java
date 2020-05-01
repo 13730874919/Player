@@ -25,7 +25,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -37,8 +36,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.bds.ffmpeg.R;
+import com.bds.ffmpeg.UPlayer;
 
-import java.io.IOException;
 import java.util.Map;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -46,7 +45,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 
 public class UniversalVideoView extends GLSurfaceView
-        implements UniversalMediaController.MediaPlayerControl,OrientationDetector.OrientationChangeListener,GLSurfaceView.Renderer{
+        implements SurfaceHolder.Callback,UniversalMediaController.MediaPlayerControl,OrientationDetector.OrientationChangeListener,GLSurfaceView.Renderer{
     private String TAG = "UniversalVideoView";
     // settable by the client
     private Uri mUri;
@@ -70,7 +69,7 @@ public class UniversalVideoView extends GLSurfaceView
 
     // All the stuff we need for playing and showing a video
     private SurfaceHolder mSurfaceHolder = null;
-    private MediaPlayer mMediaPlayer = null;
+    private UPlayer mMediaPlayer = null;
     private int         mAudioSession;
     private int         mVideoWidth;
     private int         mVideoHeight;
@@ -97,8 +96,10 @@ public class UniversalVideoView extends GLSurfaceView
     private VideoViewCallback videoViewCallback;
 
     public UniversalVideoView(Context context) {
-        this(context,null);
+        super(context,null);
         setRenderer(this);
+
+        mMediaPlayer = new UPlayer();
     }
 
     public UniversalVideoView(Context context, AttributeSet attrs) {
@@ -109,7 +110,9 @@ public class UniversalVideoView extends GLSurfaceView
         mFitXY = a.getBoolean(R.styleable.UniversalVideoView_uvv_fitXY, false);
         mAutoRotation = a.getBoolean(R.styleable.UniversalVideoView_uvv_autoRotation, false);
         a.recycle();
-        initVideoView();
+
+        mMediaPlayer = new UPlayer();
+      //  initVideoView();
     }
 
     @Override
@@ -133,11 +136,11 @@ public class UniversalVideoView extends GLSurfaceView
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (mFitXY) {
-            onMeasureFitXY(widthMeasureSpec, heightMeasureSpec);
-        } else {
-            onMeasureKeepAspectRatio(widthMeasureSpec, heightMeasureSpec);
-        }
+//        if (mFitXY) {
+//            onMeasureFitXY(widthMeasureSpec, heightMeasureSpec);
+//        } else {
+//            onMeasureKeepAspectRatio(widthMeasureSpec, heightMeasureSpec);
+//        }
     }
 
     private void onMeasureFitXY(int widthMeasureSpec, int heightMeasureSpec) {
@@ -212,15 +215,15 @@ public class UniversalVideoView extends GLSurfaceView
     @Override
     public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
-        event.setClassName(UniversalVideoView.class.getName());
+//        event.setClassName(UniversalVideoView.class.getName());
     }
 
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            info.setClassName(UniversalVideoView.class.getName());
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+//            info.setClassName(UniversalVideoView.class.getName());
+//        }
     }
 
     public int resolveAdjustedSize(int desiredSize, int measureSpec) {
@@ -230,8 +233,8 @@ public class UniversalVideoView extends GLSurfaceView
     private void initVideoView() {
         mVideoWidth = 0;
         mVideoHeight = 0;
-        getHolder().addCallback(mSHCallback);
-        getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+//        getHolder().addCallback(mSHCallback);
+//        getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         setFocusable(true);
         setFocusableInTouchMode(true);
         requestFocus();
@@ -295,7 +298,7 @@ public class UniversalVideoView extends GLSurfaceView
     public void setVideoURI(Uri uri, Map<String, String> headers) {
         mUri = uri;
         mSeekWhenPrepared = 0;
-        openVideo();
+
         requestLayout();
         invalidate();
     }
@@ -312,18 +315,22 @@ public class UniversalVideoView extends GLSurfaceView
     }
 
     private void openVideo() {
+        Log.d("XPLAY","11111111111s  openVideo"+mUri.getPath());
+        mUri = Uri.parse("/sdcard/1080.mp4");
+        Log.d("XPLAY","11111111111s  openVideo"+mUri.getPath());
         if (mUri == null || mSurfaceHolder == null) {
             // not ready for playback just yet, will try again later
             return;
         }
+
         AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
         // we shouldn't clear the target state, because somebody might have
         // called start() previously
         release(false);
-        try {
-            mMediaPlayer = new MediaPlayer();
+//        try {
+
 
 //            mMediaPlayer.setOnPreparedListener(mPreparedListener);
 //            mMediaPlayer.setOnVideoSizeChangedListener(mSizeChangedListener);
@@ -332,23 +339,23 @@ public class UniversalVideoView extends GLSurfaceView
 //            mMediaPlayer.setOnInfoListener(mInfoListener);
 //            mMediaPlayer.setOnBufferingUpdateListener(mBufferingUpdateListener);
             mCurrentBufferPercentage = 0;
-            mMediaPlayer.setDataSource(mContext, mUri);
+            mMediaPlayer.setDataSource(mContext, mUri.getPath());
             mMediaPlayer.setDisplay(mSurfaceHolder);
-            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mMediaPlayer.setScreenOnWhilePlaying(true);
-            mMediaPlayer.prepareAsync();
+//            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//            mMediaPlayer.setScreenOnWhilePlaying(true);
+            mMediaPlayer.prepare();
 
 
             // we don't set the target state here either, but preserve the
             // target state that was there before.
             mCurrentState = STATE_PREPARING;
-            attachMediaController();
-        } catch (IOException ex) {
-            Log.w(TAG, "Unable to open content: " + mUri, ex);
-            mCurrentState = STATE_ERROR;
-            mTargetState = STATE_ERROR;
-            mErrorListener.onError(mMediaPlayer, MediaPlayer.MEDIA_ERROR_UNKNOWN, 0);
-        }
+       //     attachMediaController();
+//        } catch (IOException ex) {
+//            Log.w(TAG, "Unable to open content: " + mUri, ex);
+//            mCurrentState = STATE_ERROR;
+//            mTargetState = STATE_ERROR;
+//         //   mErrorListener.onError(mMediaPlayer, MediaPlayer.MEDIA_ERROR_UNKNOWN, 0);
+//        }
     }
 
     public void setMediaController(UniversalMediaController controller) {
@@ -356,7 +363,7 @@ public class UniversalVideoView extends GLSurfaceView
             mMediaController.hide();
         }
         mMediaController = controller;
-        attachMediaController();
+     //   attachMediaController();
     }
 
     private void attachMediaController() {
@@ -392,7 +399,7 @@ public class UniversalVideoView extends GLSurfaceView
             }
 
             if (mOnPreparedListener != null) {
-                mOnPreparedListener.onPrepared(mMediaPlayer);
+               // mOnPreparedListener.onPrepared(mMediaPlayer);
             }
             if (mMediaController != null) {
                 mMediaController.setEnabled(true);
@@ -440,15 +447,15 @@ public class UniversalVideoView extends GLSurfaceView
                     mCurrentState = STATE_PLAYBACK_COMPLETED;
                     mTargetState = STATE_PLAYBACK_COMPLETED;
                     if (mMediaController != null) {
-                        boolean a = mMediaPlayer.isPlaying();
+                      //  boolean a = mMediaPlayer.isPlaying();
                         int b = mCurrentState;
                         mMediaController.showComplete();
                         //FIXME 播放完成后,视频中央会显示一个播放按钮,点击播放按钮会调用start重播,
                         // 但start后竟然又回调到这里,导致第一次点击按钮不会播放视频,需要点击第二次.
-                        Log.d(TAG, String.format("a=%s,b=%d", a, b));
+                  //      Log.d(TAG, String.format("a=%s,b=%d", a, b));
                     }
                     if (mOnCompletionListener != null) {
-                        mOnCompletionListener.onCompletion(mMediaPlayer);
+                     //   mOnCompletionListener.onCompletion(mMediaPlayer);
                     }
                 }
             };
@@ -461,7 +468,7 @@ public class UniversalVideoView extends GLSurfaceView
                         case MediaPlayer.MEDIA_INFO_BUFFERING_START:
                             Log.d(TAG, "onInfo MediaPlayer.MEDIA_INFO_BUFFERING_START");
                             if (videoViewCallback != null) {
-                                videoViewCallback.onBufferingStart(mMediaPlayer);
+                       //         videoViewCallback.onBufferingStart(mMediaPlayer);
                             }
                             if (mMediaController != null) {
                                 mMediaController.showLoading();
@@ -471,7 +478,7 @@ public class UniversalVideoView extends GLSurfaceView
                         case MediaPlayer.MEDIA_INFO_BUFFERING_END:
                             Log.d(TAG, "onInfo MediaPlayer.MEDIA_INFO_BUFFERING_END");
                             if (videoViewCallback != null) {
-                                videoViewCallback.onBufferingEnd(mMediaPlayer);
+                              //  videoViewCallback.onBufferingEnd(mMediaPlayer);
                             }
                             if (mMediaController != null) {
                                 mMediaController.hideLoading();
@@ -498,9 +505,9 @@ public class UniversalVideoView extends GLSurfaceView
 
             /* If an error handler has been supplied, use it and finish. */
                     if (mOnErrorListener != null) {
-                        if (mOnErrorListener.onError(mMediaPlayer, framework_err, impl_err)) {
-                            return true;
-                        }
+//                        if (mOnErrorListener.onError(mMediaPlayer, framework_err, impl_err)) {
+//                            return true;
+//                        }
                     }
 
             /* Otherwise, pop up an error dialog so the user knows that
@@ -590,39 +597,50 @@ public class UniversalVideoView extends GLSurfaceView
         mOnInfoListener = l;
     }
 
-    SurfaceHolder.Callback mSHCallback = new SurfaceHolder.Callback()
-    {
-        public void surfaceChanged(SurfaceHolder holder, int format,
-                                   int w, int h)
-        {
-            mSurfaceWidth = w;
-            mSurfaceHeight = h;
-            boolean isValidState =  (mTargetState == STATE_PLAYING);
-            boolean hasValidSize = (mVideoWidth == w && mVideoHeight == h);
-            if (mMediaPlayer != null && isValidState && hasValidSize) {
-                if (mSeekWhenPrepared != 0) {
-                    seekTo(mSeekWhenPrepared);
-                }
-                start();
-            }
-        }
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+//        super.surfaceCreated(holder);
+                   mSurfaceHolder = holder;
+        Log.d("XPLAY","11111111111s  surfaceCreated");
+        InitView(holder.getSurface());
+        Log.d("XPLAY","111111111112222s  surfaceCreated");
+        openVideo();
+        enableOrientationDetect();
+    }
+    private native void InitView(Object obj);
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+        super.surfaceChanged(holder, format, w, h);
+    }
 
-        public void surfaceCreated(SurfaceHolder holder)
-        {
-            mSurfaceHolder = holder;
-            openVideo();
-            enableOrientationDetect();
-        }
-
-        public void surfaceDestroyed(SurfaceHolder holder)
-        {
-            // after we return from this we can't use the surface any more
-            mSurfaceHolder = null;
-            if (mMediaController != null) mMediaController.hide();
-            release(true);
-            disableOrientationDetect();
-        }
-    };
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        super.surfaceDestroyed(holder);
+    }
+    //    SurfaceHolder.Callback mSHCallback = new SurfaceHolder.Callback()
+//    {
+//        public void surfaceChanged(SurfaceHolder holder, int format,
+//                                   int w, int h)
+//        {
+//
+//        }
+//
+//        public void surfaceCreated(SurfaceHolder holder)
+//        {
+//            mSurfaceHolder = holder;
+//            openVideo();
+//            enableOrientationDetect();
+//        }
+//
+//        public void surfaceDestroyed(SurfaceHolder holder)
+//        {
+//            // after we return from this we can't use the surface any more
+//            mSurfaceHolder = null;
+//            if (mMediaController != null) mMediaController.hide();
+//            release(true);
+//            disableOrientationDetect();
+//        }
+//    };
 
     private void enableOrientationDetect() {
         if (mAutoRotation && mOrientationDetector == null) {
@@ -643,7 +661,7 @@ public class UniversalVideoView extends GLSurfaceView
      */
     private void release(boolean cleartargetstate) {
         if (mMediaPlayer != null) {
-            mMediaPlayer.reset();
+          //  mMediaPlayer.reset();
             mMediaPlayer.release();
             mMediaPlayer = null;
             mCurrentState = STATE_IDLE;
@@ -682,26 +700,26 @@ public class UniversalVideoView extends GLSurfaceView
         if (isInPlaybackState() && isKeyCodeSupported && mMediaController != null) {
             if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK ||
                     keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
-                if (mMediaPlayer.isPlaying()) {
-                    pause();
-                    mMediaController.show();
-                } else {
-                    start();
-                    mMediaController.hide();
-                }
+//                if (mMediaPlayer.isPlaying()) {
+//                    pause();
+//                    mMediaController.show();
+//                } else {
+//                    start();
+//                    mMediaController.hide();
+//                }
                 return true;
             } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY) {
-                if (!mMediaPlayer.isPlaying()) {
-                    start();
-                    mMediaController.hide();
-                }
+//                if (!mMediaPlayer.isPlaying()) {
+//                    start();
+//                    mMediaController.hide();
+//                }
                 return true;
             } else if (keyCode == KeyEvent.KEYCODE_MEDIA_STOP
                     || keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE) {
-                if (mMediaPlayer.isPlaying()) {
-                    pause();
-                    mMediaController.show();
-                }
+//                if (mMediaPlayer.isPlaying()) {
+//                    pause();
+//                    mMediaController.show();
+//                }
                 return true;
             } else {
                 toggleMediaControlsVisibility();
@@ -722,16 +740,19 @@ public class UniversalVideoView extends GLSurfaceView
 
     @Override
     public void start() {
-        if (!mPreparedBeforeStart && mMediaController != null) {
-            mMediaController.showLoading();
-        }
-
+//        if (!mPreparedBeforeStart && mMediaController != null) {
+//            mMediaController.showLoading();
+//        }
+        Log.d("bds","start=="+isInPlaybackState());
         if (isInPlaybackState()) {
+            mMediaPlayer.setDataSource(mContext,"/sdcard/1080.mp4");
+            mMediaPlayer.prepare();
             mMediaPlayer.start();
             mCurrentState = STATE_PLAYING;
-            if (this.videoViewCallback != null) {
-                this.videoViewCallback.onStart(mMediaPlayer);
-            }
+            mMediaController.hide();
+//            if (this.videoViewCallback != null) {
+//                this.videoViewCallback.onStart(mMediaPlayer);
+//            }
         }
         mTargetState = STATE_PLAYING;
     }
@@ -739,13 +760,13 @@ public class UniversalVideoView extends GLSurfaceView
     @Override
     public void pause() {
         if (isInPlaybackState()) {
-            if (mMediaPlayer.isPlaying()) {
-                mMediaPlayer.pause();
+//            if (mMediaPlayer.isPlaying()) {
+                mMediaPlayer.Pause();
                 mCurrentState = STATE_PAUSED;
-                if (this.videoViewCallback != null) {
-                    this.videoViewCallback.onPause(mMediaPlayer);
-                }
-            }
+//                if (this.videoViewCallback != null) {
+//                    this.videoViewCallback.onPause(mMediaPlayer);
+
+//            }
         }
         mTargetState = STATE_PAUSED;
     }
@@ -760,9 +781,9 @@ public class UniversalVideoView extends GLSurfaceView
 
     @Override
     public int getDuration() {
-        if (isInPlaybackState()) {
-            return mMediaPlayer.getDuration();
-        }
+//        if (isInPlaybackState()) {
+//            return mMediaPlayer.getDuration();
+//        }
 
         return -1;
     }
@@ -787,7 +808,8 @@ public class UniversalVideoView extends GLSurfaceView
 
     @Override
     public boolean isPlaying() {
-        return isInPlaybackState() && mMediaPlayer.isPlaying();
+//        return isInPlaybackState() && mMediaPlayer.isPlaying();
+       return true;
     }
 
     @Override
@@ -799,10 +821,11 @@ public class UniversalVideoView extends GLSurfaceView
     }
 
     private boolean isInPlaybackState() {
-        return (mMediaPlayer != null &&
-                mCurrentState != STATE_ERROR &&
-                mCurrentState != STATE_IDLE &&
-                mCurrentState != STATE_PREPARING);
+//        return (mMediaPlayer != null &&
+//                mCurrentState != STATE_ERROR &&
+//                mCurrentState != STATE_IDLE &&
+//                mCurrentState != STATE_PREPARING);
+        return true;
     }
 
     @Override

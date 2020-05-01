@@ -1,6 +1,8 @@
 package com.bds.ffmpeg;
 
 import android.content.Context;
+import android.util.Log;
+import android.view.SurfaceHolder;
 
 public class UPlayer {
     public UPlayer() {
@@ -12,13 +14,17 @@ public class UPlayer {
     }
     private static UPlayer mplayer;
     private boolean status = false;
-    static UPlayer getInstance(){
+    public static UPlayer getInstance(){
         if(mplayer==null){
             mplayer = new UPlayer();
         }
         return mplayer;
     }
     public void stop(){
+        Pause();
+        status= false;
+    }
+    public void ause(){
         Pause();
         status= false;
     }
@@ -29,17 +35,23 @@ public class UPlayer {
         url=path;
     }
     public void prepare(){
-
+         Open(url);
+        Log.d("XPLAY","11111111111prepare");
     }
     public void start(){
         status= true;
         Start();
+        Log.d("XPLAY","11111111111start");
     }
-    public void getposition(){
-
+    public int  getCurrentPosition(){
+        return  (int)GetPos();
     }
-    public void seekTo(){
-
+    public void seekTo(int pos){
+         Seek( pos);
+    }
+    public void setDisplay(SurfaceHolder holder){
+        Log.d("XPLAY","11111111111setDisplay");
+        InitView(holder.getSurface());
     }
     private native void InitView(Object obj);
     public native void Pause();
