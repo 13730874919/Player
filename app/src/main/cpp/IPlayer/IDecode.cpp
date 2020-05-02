@@ -65,6 +65,9 @@ void IDecode::Main()
                 if (!frame.data) break;
            //     XLOGE("RecvFrame %d",frame.size);
                 //发送数据给观察者
+                if(frame.pts==0){
+                    XLOGE("frame.pts %d",frame.pts);
+                }
                 pts= frame.pts;
                 this->Notify(frame);
             }
@@ -74,14 +77,16 @@ void IDecode::Main()
     }
 }
 
-void IDecode::Clear() {
+void IDecode::Clear(bool isClearPts) {
     packsMutex.lock();
     while(!packs.empty())
     {
         packs.front().Drop();
         packs.pop_front();
     }
-    pts = 0;
+    if(!isClearPts){
+        pts = 0;
+    }
     synPts = 0;
     packsMutex.unlock();
 }

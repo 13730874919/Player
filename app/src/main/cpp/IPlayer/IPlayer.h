@@ -16,6 +16,7 @@ enum PLAYER_STATUS{
     PLAYING,
     IDEL,
     PAUSE,
+    SEEK
 };
 class IPlayer : public IObserver{
 public:

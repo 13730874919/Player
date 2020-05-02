@@ -18,7 +18,7 @@ public:
     //获取解码结果
     virtual XData RecvFrame()=0;
     virtual void Close()=0;
-    virtual void Clear();
+    virtual void Clear(bool isClearPts=false);
     void Update(XData data) override;
 
     bool isAudio = false;
