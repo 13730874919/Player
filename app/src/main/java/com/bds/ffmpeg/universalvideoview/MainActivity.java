@@ -24,6 +24,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.bds.ffmpeg.R;
@@ -33,6 +35,8 @@ public class MainActivity extends Activity implements UniversalVideoView.VideoVi
     private static final String TAG = "MainActivity";
     private static final String SEEK_POSITION_KEY = "SEEK_POSITION_KEY";
     private static final String VIDEO_URL = "/sdcard/1080.mp4";
+//    private static final String VIDEO_URL = "http://vfx.mtime.cn/Video/2018/07/06/mp4/180706094003288023.mp4";
+
 
     UniversalVideoView mVideoView;
     UniversalMediaController mMediaController;
@@ -48,12 +52,16 @@ public class MainActivity extends Activity implements UniversalVideoView.VideoVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);//隐藏标题
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+        WindowManager.LayoutParams.FLAG_FULLSCREEN);//设置全屏
         setContentView(R.layout.unisal);
-
         mVideoLayout = findViewById(R.id.video_layout);
         mBottomLayout = findViewById(R.id.bottom_layout);
         mVideoView = (UniversalVideoView) findViewById(R.id.videoView);
         mMediaController = (UniversalMediaController) findViewById(R.id.media_controller);
+
         mVideoView.setMediaController(mMediaController);
         setVideoAreaSize();
         mVideoView.setVideoPath(VIDEO_URL);
@@ -80,6 +88,7 @@ public class MainActivity extends Activity implements UniversalVideoView.VideoVi
         });
 
     }
+
 
     @Override
     protected void onPause() {
@@ -110,6 +119,8 @@ public class MainActivity extends Activity implements UniversalVideoView.VideoVi
                 Log.d("XPLAY", "msg.cachedHeight=="+cachedHeight);
                 mVideoLayout.setLayoutParams(videoLayoutParams);
                 mVideoView.requestFocus();
+
+
             }
         });
     }

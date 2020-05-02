@@ -19,21 +19,27 @@ package com.bds.ffmpeg.universalvideoview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.pm.ActivityInfo;
 import android.content.res.TypedArray;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
 
 import com.bds.ffmpeg.R;
 import com.bds.ffmpeg.UPlayer;
@@ -839,7 +845,7 @@ public class UniversalVideoView extends GLSurfaceView
 
     @Override
     public void setFullscreen(boolean fullscreen) {
-        int screenOrientation = fullscreen ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        int screenOrientation = fullscreen ? ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                 : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         setFullscreen(fullscreen, screenOrientation);
     }
@@ -856,7 +862,13 @@ public class UniversalVideoView extends GLSurfaceView
                 mVideoViewLayoutHeight = params.height;
             }
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            activity.setRequestedOrientation(screenOrientation);
+
+
+            if (getAppCompActivity(activity) != null) {
+                getAppCompActivity(activity).setRequestedOrientation(screenOrientation);
+            } else {
+                scanForActivity(activity).setRequestedOrientation(screenOrientation);
+            }
         } else {
             ViewGroup.LayoutParams params = getLayoutParams();
             params.width = mVideoViewLayoutWidth;//使用全屏之前的参数
@@ -866,12 +878,40 @@ public class UniversalVideoView extends GLSurfaceView
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             activity.setRequestedOrientation(screenOrientation);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN);
+        } else {
+            setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);
+        }
+
         mMediaController.toggleButtons(fullscreen);
         if (videoViewCallback != null) {
             videoViewCallback.onScaleChange(fullscreen);
         }
     }
 
+    public static Activity scanForActivity(Context context) {
+        if (context == null) return null;
+
+        if (context instanceof Activity) {
+            return (Activity) context;
+        } else if (context instanceof ContextWrapper) {
+            return scanForActivity(((ContextWrapper) context).getBaseContext());
+        }
+
+        return null;
+    }
+
+    public static AppCompatActivity getAppCompActivity(Context context) {
+        if (context == null) return null;
+        if (context instanceof AppCompatActivity) {
+            return (AppCompatActivity) context;
+        } else if (context instanceof ContextThemeWrapper) {
+            return getAppCompActivity(((ContextThemeWrapper) context).getBaseContext());
+        }
+        return null;
+    }
 /*
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void switchTitleBar(boolean show) {
