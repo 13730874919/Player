@@ -57,6 +57,7 @@ public class UniversalMediaController extends FrameLayout {
 
     private boolean mDragging;
 
+    private int test=5;
     private boolean mScalable = false;
     private boolean mIsFullScreen = false;
 //    private boolean mFullscreenEnabled = false;
@@ -484,7 +485,10 @@ public class UniversalMediaController extends FrameLayout {
 
     private OnClickListener mScaleListener = new OnClickListener() {
         public void onClick(View v) {
+            Log.d("Uplayer","mIsFullScreen=="+test);
+            Log.d("Uplayer","mIsFullScreen=="+mIsFullScreen);
             mIsFullScreen = !mIsFullScreen;
+            test=10;
             updateScaleButton();
             updateBackButton();
             mPlayer.setFullscreen(mIsFullScreen);
@@ -495,6 +499,7 @@ public class UniversalMediaController extends FrameLayout {
     private OnClickListener mBackListener = new OnClickListener() {
         public void onClick(View v) {
             if (mIsFullScreen) {
+                Log.d("Uplayer","OnClickListener==");
                 mIsFullScreen = false;
                 updateScaleButton();
                 updateBackButton();
@@ -530,6 +535,7 @@ public class UniversalMediaController extends FrameLayout {
     }
 
     void toggleButtons(boolean isFullScreen) {
+        Log.d("Uplayer","toggleButtons=="+isFullScreen);
         mIsFullScreen = isFullScreen;
         updateScaleButton();
         updateBackButton();
@@ -650,10 +656,6 @@ public class UniversalMediaController extends FrameLayout {
         mTitle.setText(titile);
     }
 
-//    public void setFullscreenEnabled(boolean enabled) {
-//        mFullscreenEnabled = enabled;
-//        mScaleButton.setVisibility(mIsFullScreen ? VISIBLE : GONE);
-//    }
 
 
     public void setOnErrorView(int resId) {
