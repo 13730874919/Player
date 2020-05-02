@@ -88,7 +88,7 @@ public class MainActivity extends Activity implements UniversalVideoView.VideoVi
         if (mVideoView != null && mVideoView.isPlaying()) {
             mSeekPosition = mVideoView.getCurrentPosition();
             Log.d(TAG, "onPause mSeekPosition=" + mSeekPosition);
-            mVideoView.pause();
+          //  mVideoView.pause();
         }
     }
 
@@ -106,6 +106,8 @@ public class MainActivity extends Activity implements UniversalVideoView.VideoVi
                 ViewGroup.LayoutParams videoLayoutParams = mVideoLayout.getLayoutParams();
                 videoLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 videoLayoutParams.height = cachedHeight;
+                Log.d("XPLAY", "msg.hideCenterView=="+width);
+                Log.d("XPLAY", "msg.cachedHeight=="+cachedHeight);
                 mVideoLayout.setLayoutParams(videoLayoutParams);
                 mVideoView.requestFocus();
             }

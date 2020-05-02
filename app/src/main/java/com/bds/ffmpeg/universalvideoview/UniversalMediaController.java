@@ -252,7 +252,7 @@ public class UniversalMediaController extends FrameLayout {
         @Override
         public void handleMessage(Message msg) {
             int pos;
-            Log.d("XPLAY", "msg.what=="+msg.what);
+//            Log.d("XPLAY", "msg.what=="+msg.what);
             switch (msg.what) {
                 case FADE_OUT: //1
                     hide();
@@ -323,6 +323,7 @@ public class UniversalMediaController extends FrameLayout {
 
 
     private void hideCenterView() {
+        Log.d("XPLAY", "msg.hideCenterView==");
         if (mCenterPlayButton.getVisibility() == VISIBLE) {
             mCenterPlayButton.setVisibility(GONE);
         }
@@ -572,7 +573,6 @@ public class UniversalMediaController extends FrameLayout {
             if (mPlayer == null || !fromuser) {
                 // We're not interested in programmatically generated changes to
                 // the progress bar's position.
-                Log.d("XPLAY","onProgressChanged return ="+newPosition);
                 return;
             }
 
