@@ -225,7 +225,6 @@ public class UniversalMediaController extends FrameLayout {
         mHandler.sendEmptyMessage(SHOW_PROGRESS);
 
         Message msg = mHandler.obtainMessage(FADE_OUT);
-        Log.d("XPLAY","timeout=="+timeout);
         if (timeout != 0) {
             mHandler.removeMessages(FADE_OUT);
             mHandler.sendMessageDelayed(msg, timeout);
@@ -519,10 +518,10 @@ public class UniversalMediaController extends FrameLayout {
     private void updatePausePlay() {
         if (mPlayer != null && mPlayer.isPlaying()) {
             mTurnButton.setImageResource(R.drawable.uvv_stop_btn);
-//            mCenterPlayButton.setVisibility(GONE);
+            mCenterPlayButton.setVisibility(GONE);
         } else {
             mTurnButton.setImageResource(R.drawable.uvv_player_player_btn);
-//            mCenterPlayButton.setVisibility(VISIBLE);
+            mCenterPlayButton.setVisibility(VISIBLE);
         }
     }
 
@@ -561,9 +560,10 @@ public class UniversalMediaController extends FrameLayout {
 
 
     private OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
-        int newPosition = 0;
+
 
         boolean change = false;
+
 
         public void onStartTrackingTouch(SeekBar bar) {
             if (mPlayer == null) {
@@ -582,10 +582,7 @@ public class UniversalMediaController extends FrameLayout {
                 return;
             }
 
-            long duration = mPlayer.getDuration();
-            long newposition = (duration * progress) / 1000L;
-            Log.d("XPLAY","onProgressChanged return ="+duration+"pro"+progress);
-            newPosition = (int) newposition;
+
             change = true;
         }
 
@@ -594,10 +591,13 @@ public class UniversalMediaController extends FrameLayout {
                 return;
             }
             if (change) {
-                Log.d("XPLAY","11111111111seekTonewPosition="+newPosition);
-                mPlayer.seekTo(newPosition);
+                long duration = mPlayer.getDuration();
+                 double newposition = (duration * bar.getProgress()) / 1000L;
+                int newval = (int) newposition;
+                Log.d("XPLAY","11111111111seekTonewPosition="+newval);
+                mPlayer.seekTo(newval);
                 if (mCurrentTime != null) {
-                    mCurrentTime.setText(stringForTime(newPosition));
+                    mCurrentTime.setText(stringForTime(newval));
                 }
             }
             mDragging = false;

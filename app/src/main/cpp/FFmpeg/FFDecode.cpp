@@ -130,6 +130,7 @@ XData FFDecode::RecvFrame() {
 void FFDecode::Close() {
     IDecode::Clear();
     mux.lock();
+    XLOGE("frame.Close");
     pts = 0;
     if(frame)
         av_frame_free(&frame);
@@ -141,8 +142,8 @@ void FFDecode::Close() {
     mux.unlock();
 }
 
-void FFDecode::Clear() {
-    IDecode::Clear();
+void FFDecode::Clear(bool isClearPts) {
+    IDecode::Clear(isClearPts);
     mux.lock();
     if(codec)
         avcodec_flush_buffers(codec);

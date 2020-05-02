@@ -156,20 +156,20 @@ double IPlayer::PlayPos() {
 bool IPlayer::Seek(double pos) {
     bool re = false;
     if(!demux) return false;
-
+    XLOGE("Seek start");
     //暂停所有线程
     SetPause(true);
     mux.lock();
     //清理缓冲
-    //2 清理缓冲队列
+    //2 清理缓冲队列，清理ffmpeg的缓冲,seek时不清除pts
     if(vdecode)
-        vdecode->Clear(); //清理缓冲队列，清理ffmpeg的缓冲
+        vdecode->Clear();
     if(adecode)
         adecode->Clear();
     if(audioPlay)
         audioPlay->Clear();
 
-
+    vdecode->pts=demux->total*pos;
     re = demux->Seek(pos); //seek跳转到关键帧
     if(!vdecode)
     {
@@ -177,48 +177,54 @@ bool IPlayer::Seek(double pos) {
         SetPause(false);
         return re;
     }
-//    //解码到实际需要显示的帧
-//    long long seekPts = pos*demux->total;
-//    XLOGE("seekpts==%lld",seekPts);
-//    while(!isExit)
-//    {
-//        XData pkt = demux->Read();
-//        if(pkt.size<=0)break;
-//        if(pkt.isAudio)
-//        {
-//            if(pkt.pts < seekPts)
-//            {
-//                pkt.Drop();
-//                continue;
-//            }
-//            //写入缓冲队列
-//            demux->Notify(pkt);
-//            continue;
-//        }
-//
-//        //解码需要显示的帧之前的数据
-//        vdecode->SendPacket(pkt);
-//        pkt.Drop();
-//        XData data = vdecode->RecvFrame();
-//        if(data.size <=0)
-//        {
-//            continue;
-//        }
+    //解码到实际需要显示的帧
+    long long seekPts = pos*demux->total;
+    XLOGE("seekpts==%lld",seekPts);
+    while(!isExit)
+    {
+        XData pkt = demux->Read();
+        if(pkt.size<=0)break;
+        if(pkt.isAudio)
+        {
+            if(pkt.pts < seekPts)
+            {
+                pkt.Drop();
+                continue;
+            }
+            //写入缓冲队列
+            demux->Notify(pkt);
+            continue;
+        }
+
+        //解码需要显示的帧之前的数据
+        vdecode->SendPacket(pkt);
+        pkt.Drop();
+        XData data = vdecode->RecvFrame();
+        if(data.size <=0)
+        {
+            continue;
+        }
 //        XLOGE("data.pts==%d",data.pts);
-//        if(data.pts >= seekPts)
-//        {
-//            //vdecode->Notify(data);
-//            break;
-//        }
-//    }
+        if(data.pts >= seekPts)
+        {
+            //vdecode->Notify(data);
+            break;
+        }
+    }
+
     mux.unlock();
 
     SetPause(false);
+    XLOGE("Seek end");
     return re;
 }
 
 void IPlayer::SetPause(bool isP) {
     mux.lock();
+    if(isP)
+        playStatus=PAUSE;
+    else
+        playStatus=PLAYING;
     XThread::SetPause(isP);
     if(demux)
         demux->SetPause(isP);
@@ -228,10 +234,6 @@ void IPlayer::SetPause(bool isP) {
         adecode->SetPause(isP);
     if(audioPlay)
         audioPlay->SetPause(isP);
-    if(isP)
-        playStatus=IDEL;
-    else
-        playStatus=PLAYING;
     mux.unlock();
 }
 
@@ -245,6 +247,7 @@ int IPlayer::getDuration() {
 }
 
 int IPlayer::getPlayStatus() {
+ //   XLOGE("playStatus==%d, Plapos=%lf",playStatus,PlayPos());
     return playStatus ;
 }
 

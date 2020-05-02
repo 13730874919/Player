@@ -64,11 +64,12 @@ public class UPlayer {
     //    Log.e(TAG,"Uplayer getDuration");
         return duration;
     }
+
     public int  getCurrentPosition(){
         Double ppos =  GetPos();
        int pos =  (int)(ppos*Duration);
-    //    Log.e(TAG,"Uplayer getCurrentPosition");
-        return  pos;
+       Log.e(TAG,"Uplayer getCurrentPosition=="+pos);
+       return  pos;
     }
 
     public void seekTo(int pos){
