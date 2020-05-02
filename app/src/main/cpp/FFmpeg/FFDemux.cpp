@@ -30,6 +30,7 @@ bool FFDemux::Open(const  char *url) {
     }
     XLOGE("avformat_find_stream_info success");
     this->total = ic->duration/(AV_TIME_BASE/1000);
+
     mux.unlock();
     XLOGI("this->total= %d",total);
     GetVPara();
@@ -115,6 +116,8 @@ XParameter FFDemux::GetVPara() {
 //    if(ic->streams[videoStream]->duration>0){
 //        this->total =ic->streams[videoStream]->duration/(AV_TIME_BASE/1000);
 //    }
+    VideoWidth = ic->streams[re]->codec->width;
+    VideoHeight = ic->streams[re]->codec->height;
     para.para = ic->streams[re]->codecpar;
 
     mux.unlock();

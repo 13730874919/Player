@@ -107,12 +107,12 @@ Java_com_bds_ffmpeg_UPlayer_Seek(JNIEnv *env, jobject thiz, jdouble pos) {
 JNIEXPORT void JNICALL
 Java_com_bds_ffmpeg_UPlayer_Pause(JNIEnv *env, jobject thiz) {
     // TODO: implement Pause()
-    IPlayerPorxy::Get()->SetPause(false);
+    IPlayerPorxy::Get()->SetPause(true);
 }extern "C"
 JNIEXPORT void JNICALL
 Java_com_bds_ffmpeg_UPlayer_play(JNIEnv *env, jobject thiz) {
     // TODO: implement play()
-    IPlayerPorxy::Get()->SetPause(true);
+    IPlayerPorxy::Get()->SetPause(false);
 }extern "C"
 JNIEXPORT jdouble JNICALL
 Java_com_bds_ffmpeg_UPlayer_GetPos(JNIEnv *env, jobject thiz) {
@@ -120,15 +120,32 @@ Java_com_bds_ffmpeg_UPlayer_GetPos(JNIEnv *env, jobject thiz) {
     return IPlayerPorxy::Get()->PlayPos();
 }extern "C"
 JNIEXPORT void JNICALL
-Java_com_bds_ffmpeg_universalvideoview_UniversalVideoView_InitView(JNIEnv *env, jobject thiz,
-                                                                   jobject obj) {
-    // TODO: implement InitView()
-    ANativeWindow *win = ANativeWindow_fromSurface(env,obj);
-    // view->setRender(win);
-    IPlayerPorxy::Get()->InitView(win);
-}extern "C"
-JNIEXPORT void JNICALL
 Java_com_bds_ffmpeg_UPlayer_Start(JNIEnv *env, jobject thiz) {
     // TODO: implement Start()
     IPlayerPorxy::Get()->Start();
+}extern "C"
+JNIEXPORT jint JNICALL
+Java_com_bds_ffmpeg_UPlayer_native_1getDuration(JNIEnv *env, jobject thiz) {
+    // TODO: implement native_getDuration()
+    return IPlayerPorxy::Get()->getDuration();
+}extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_bds_ffmpeg_UPlayer_native_1isPlaying(JNIEnv *env, jobject thiz) {
+    // TODO: implement native_isPlaying()
+    return !IPlayerPorxy::Get()->IsPause();
+}extern "C"
+JNIEXPORT jint JNICALL
+Java_com_bds_ffmpeg_UPlayer_native_1getPlayerStatus(JNIEnv *env, jobject thiz) {
+    // TODO: implement native_getPlayerStatus()
+    return IPlayerPorxy::Get()->getPlayStatus();
+}extern "C"
+JNIEXPORT jint JNICALL
+Java_com_bds_ffmpeg_UPlayer_native_1getVideoHeight(JNIEnv *env, jobject thiz) {
+    // TODO: implement native_getVideoHeight()
+    return IPlayerPorxy::Get()->getVideoHeight();
+}extern "C"
+JNIEXPORT jint JNICALL
+Java_com_bds_ffmpeg_UPlayer_native_1getVideoWidth(JNIEnv *env, jobject thiz) {
+    // TODO: implement native_getVideoWidth()
+    return IPlayerPorxy::Get()->getVideoWidth();
 }

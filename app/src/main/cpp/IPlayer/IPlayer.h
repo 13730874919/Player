@@ -11,7 +11,12 @@
 #include "IResample.h"
 #include "IVideoView.h"
 #include "IAudioPlay.h"
-
+enum PLAYER_STATUS{
+    PREPARE=0,
+    PLAYING,
+    IDEL,
+    PAUSE,
+};
 class IPlayer : public IObserver{
 public:
     static IPlayer *Get(unsigned char index=0);
@@ -20,6 +25,10 @@ public:
     virtual void InitView(void *win);
     virtual void Close();
     virtual double PlayPos();
+    virtual int getDuration();
+    virtual int getPlayStatus();
+    virtual int getVideoWidth();
+    virtual int getVideoHeight();
     //是否视频硬解码
     bool isHardDecode = true;
     virtual bool Seek(double pos);
@@ -35,6 +44,7 @@ public:
     IResample *resample = 0;
     IVideoView *videoView = 0;
     IAudioPlay *audioPlay = 0;
+    PLAYER_STATUS playStatus=IDEL;
 protected:
     IPlayer(){};
     std::mutex mux;

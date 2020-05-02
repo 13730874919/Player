@@ -53,9 +53,10 @@ public class MainActivity extends Activity implements UniversalVideoView.VideoVi
         mVideoLayout = findViewById(R.id.video_layout);
         mBottomLayout = findViewById(R.id.bottom_layout);
         mVideoView = (UniversalVideoView) findViewById(R.id.videoView);
-        mMediaController = new UniversalMediaController(this);
+        mMediaController = (UniversalMediaController) findViewById(R.id.media_controller);
         mVideoView.setMediaController(mMediaController);
         setVideoAreaSize();
+        mVideoView.setVideoPath(VIDEO_URL);
         mVideoView.setVideoViewCallback(this);
         mStart = (TextView) findViewById(R.id.start);
 
@@ -106,7 +107,6 @@ public class MainActivity extends Activity implements UniversalVideoView.VideoVi
                 videoLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 videoLayoutParams.height = cachedHeight;
                 mVideoLayout.setLayoutParams(videoLayoutParams);
-                mVideoView.setVideoPath(VIDEO_URL);
                 mVideoView.requestFocus();
             }
         });

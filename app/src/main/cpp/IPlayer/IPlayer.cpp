@@ -40,6 +40,7 @@ bool IPlayer::Open(const char *path) {
     {
         XLOGE("resample->Open %s failed!",path);
     }
+    playStatus=PREPARE;
     mux.unlock();
     return true;
 }
@@ -61,6 +62,7 @@ bool IPlayer::Start() {
         audioPlay->StartPlay(outPara);
 
     XThread::start();
+    playStatus=PLAYING;
     mux.unlock();
     return true;
 }
@@ -129,6 +131,7 @@ void IPlayer::Close() {
         adecode->Close();
     if(demux)
         demux->Close();
+    playStatus=IDEL;
     mux.unlock();
 }
 
@@ -225,5 +228,40 @@ void IPlayer::SetPause(bool isP) {
         adecode->SetPause(isP);
     if(audioPlay)
         audioPlay->SetPause(isP);
+    if(isP)
+        playStatus=IDEL;
+    else
+        playStatus=PLAYING;
     mux.unlock();
+}
+
+int IPlayer::getDuration() {
+    mux.lock();
+    int total = 0;
+    if(demux)
+        total = demux->total;
+    mux.unlock();
+    return total;
+}
+
+int IPlayer::getPlayStatus() {
+    return playStatus ;
+}
+
+int IPlayer::getVideoWidth() {
+    mux.lock();
+    int ret = 0;
+    if(demux)
+        ret = demux->VideoWidth;
+    mux.unlock();
+    return ret;
+}
+
+int IPlayer::getVideoHeight() {
+    mux.lock();
+    int ret = 0;
+    if(demux)
+        ret = demux->VideoHeight;
+    mux.unlock();
+    return ret;
 }

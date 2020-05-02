@@ -5,6 +5,7 @@
 #ifndef FFMPEG_XTHREAD_H
 #define FFMPEG_XTHREAD_H
 
+
 void XSleep(int mis);
 class XThread {
 public:
