@@ -108,6 +108,7 @@ JNIEXPORT void JNICALL
 Java_com_bds_ffmpeg_UPlayer_Pause(JNIEnv *env, jobject thiz) {
     // TODO: implement Pause()
     IPlayerPorxy::Get()->SetPause(true);
+    XLOGE("IPlayerPorxy::Get()->SetPause(true)");
 }extern "C"
 JNIEXPORT void JNICALL
 Java_com_bds_ffmpeg_UPlayer_play(JNIEnv *env, jobject thiz) {
@@ -132,6 +133,7 @@ Java_com_bds_ffmpeg_UPlayer_native_1getDuration(JNIEnv *env, jobject thiz) {
 JNIEXPORT jboolean JNICALL
 Java_com_bds_ffmpeg_UPlayer_native_1isPlaying(JNIEnv *env, jobject thiz) {
     // TODO: implement native_isPlaying()
+    XLOGE("IPlayerPorxy::Get()->IsPause()=%d",IPlayerPorxy::Get()->IsPause());
     return !IPlayerPorxy::Get()->IsPause();
 }extern "C"
 JNIEXPORT jint JNICALL
