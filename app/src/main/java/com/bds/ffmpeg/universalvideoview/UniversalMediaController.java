@@ -22,6 +22,7 @@ import android.content.res.TypedArray;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -187,22 +188,6 @@ public class UniversalMediaController extends FrameLayout {
         show(sDefaultTimeout);
     }
 
-    /**
-     * Disable pause or seek buttons if the stream cannot be paused or seeked.
-     * This requires the control interface to be a MediaPlayerControlExt
-     */
-    private void disableUnsupportedButtons() {
-        try {
-            if (mTurnButton != null && mPlayer != null && !mPlayer.canPause()) {
-                mTurnButton.setEnabled(false);
-            }
-        } catch (IncompatibleClassChangeError ex) {
-            // We were given an old version of the interface, that doesn't have
-            // the canPause/canSeekXYZ methods. This is OK, it just means we
-            // assume the media can be paused and seeked, and so we don't disable
-            // the buttons.
-        }
-    }
 
     /**
      * Show the controller on screen. It will go away
@@ -217,7 +202,7 @@ public class UniversalMediaController extends FrameLayout {
             if (mTurnButton != null) {
                 mTurnButton.requestFocus();
             }
-            disableUnsupportedButtons();
+
             mShowing = true;
         }
         updatePausePlay();
@@ -239,6 +224,7 @@ public class UniversalMediaController extends FrameLayout {
         mHandler.sendEmptyMessage(SHOW_PROGRESS);
 
         Message msg = mHandler.obtainMessage(FADE_OUT);
+        Log.d("XPLAY","timeout=="+timeout);
         if (timeout != 0) {
             mHandler.removeMessages(FADE_OUT);
             mHandler.sendMessageDelayed(msg, timeout);
@@ -266,6 +252,7 @@ public class UniversalMediaController extends FrameLayout {
         @Override
         public void handleMessage(Message msg) {
             int pos;
+            Log.d("XPLAY", "msg.what=="+msg.what);
             switch (msg.what) {
                 case FADE_OUT: //1
                     hide();
@@ -391,7 +378,6 @@ public class UniversalMediaController extends FrameLayout {
             mEndTime.setText(stringForTime(duration));
         if (mCurrentTime != null)
             mCurrentTime.setText(stringForTime(position));
-
         return position;
     }
 
@@ -557,6 +543,7 @@ public class UniversalMediaController extends FrameLayout {
     }
 
     private void doPauseResume() {
+        Log.d("XPLAY","    private void doPauseResume()==="+mPlayer.isPlaying());
         if (mPlayer.isPlaying()) {
             mPlayer.pause();
         } else {
@@ -585,11 +572,13 @@ public class UniversalMediaController extends FrameLayout {
             if (mPlayer == null || !fromuser) {
                 // We're not interested in programmatically generated changes to
                 // the progress bar's position.
+                Log.d("XPLAY","onProgressChanged return ="+newPosition);
                 return;
             }
 
             long duration = mPlayer.getDuration();
             long newposition = (duration * progress) / 1000L;
+            Log.d("XPLAY","onProgressChanged return ="+duration+"pro"+progress);
             newPosition = (int) newposition;
             change = true;
         }
@@ -599,6 +588,7 @@ public class UniversalMediaController extends FrameLayout {
                 return;
             }
             if (change) {
+                Log.d("XPLAY","11111111111seekTonewPosition="+newPosition);
                 mPlayer.seekTo(newPosition);
                 if (mCurrentTime != null) {
                     mCurrentTime.setText(stringForTime(newPosition));

@@ -66,6 +66,17 @@ double IPlayerPorxy::PlayPos() {
     return pos;
 }
 
+int IPlayerPorxy::getDuration() {
+    int  total = 0;
+    mux.lock();
+    if(player)
+    {
+        total = player->getDuration();
+    }
+    mux.unlock();
+    return total;
+}
+
 bool IPlayerPorxy::Seek(double pos) {
     bool re = false;
     mux.lock();
@@ -89,6 +100,33 @@ bool IPlayerPorxy::IsPause() {
     mux.lock();
     if(player)
         re = player->IsPause();
+    mux.unlock();
+    return re;
+}
+
+int IPlayerPorxy::getPlayStatus() {
+    int re = IDEL;
+    mux.lock();
+    if(player)
+        re = player->getPlayStatus();
+    mux.unlock();
+    return re;
+}
+
+int IPlayerPorxy::getVideoWidth() {
+    int re = 0;
+    mux.lock();
+    if(player)
+        re = player->getVideoWidth();
+    mux.unlock();
+    return re;
+}
+
+int IPlayerPorxy::getVideoHeight() {
+    int re = 0;
+    mux.lock();
+    if(player)
+        re = player->getVideoHeight();
     mux.unlock();
     return re;
 }

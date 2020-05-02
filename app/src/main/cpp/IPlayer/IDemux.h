@@ -21,6 +21,8 @@ public:
     virtual bool Seek(double pos)=0;
     virtual void Close()=0;
     int total=0;
+    int VideoWidth=0;
+    int VideoHeight=0;
 protected:
 
     virtual void Main();

@@ -27,6 +27,10 @@ public:
     virtual void InitView(void *win);
     virtual void SetPause(bool isP);
     virtual bool IsPause();
+    virtual int getDuration();
+    virtual int getPlayStatus();
+    virtual int getVideoWidth();
+    virtual int getVideoHeight();
 protected:
     IPlayerPorxy(){}
     IPlayer *player = 0;
