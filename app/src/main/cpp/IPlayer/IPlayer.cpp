@@ -152,11 +152,19 @@ double IPlayer::PlayPos() {
     mux.unlock();
     return pos;
 }
-
+long long GetNowMs(){
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    int sec = tv.tv_sec%360000;
+    int ret = sec*1000+tv.tv_usec/1000;
+    return ret;
+}
 bool IPlayer::Seek(double pos) {
     bool re = false;
     if(!demux) return false;
     XLOGE("Seek start");
+    long long val=0;
+    long long start = GetNowMs();
     //暂停所有线程
     SetPause(true);
     mux.lock();
@@ -169,6 +177,9 @@ bool IPlayer::Seek(double pos) {
     if(audioPlay)
         audioPlay->Clear();
 
+    val = GetNowMs()-start;
+    XLOGE("seekpts val 111 ==%lld",val);
+
     vdecode->pts=demux->total*pos;
     re = demux->Seek(pos); //seek跳转到关键帧
     if(!vdecode)
@@ -177,9 +188,12 @@ bool IPlayer::Seek(double pos) {
         SetPause(false);
         return re;
     }
+    val = GetNowMs()-start;
+    XLOGE("seekpts val 222 ==%lld",val);
     //解码到实际需要显示的帧
     long long seekPts = pos*demux->total;
-    XLOGE("seekpts==%lld",seekPts);
+  //  XLOGE("seekpts==%lld",seekPts);
+    int cnt=0;
     while(!isExit)
     {
         XData pkt = demux->Read();
@@ -192,10 +206,10 @@ bool IPlayer::Seek(double pos) {
                 continue;
             }
             //写入缓冲队列
-            demux->Notify(pkt);
+         //   demux->Notify(pkt);
             continue;
         }
-
+        cnt++;
         //解码需要显示的帧之前的数据
         vdecode->SendPacket(pkt);
         pkt.Drop();
@@ -211,9 +225,9 @@ bool IPlayer::Seek(double pos) {
             break;
         }
     }
-
+    val = GetNowMs()-start;
+    XLOGE("seekpts val 333 ==%lld   cnt==%d",val,cnt);
     mux.unlock();
-
     SetPause(false);
     XLOGE("Seek end");
     return re;

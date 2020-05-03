@@ -36,7 +36,8 @@ public class UPlayer {
         Pause();
     }
     public void release(){
-
+        native_release();
+        Log.e(TAG,"Uplayer release");
     }
     public void setDataSource(Context text,String path){
         url=path;
@@ -110,6 +111,9 @@ public class UPlayer {
     public native int native_getPlayerStatus();
     public native int native_getVideoHeight();
     public native int native_getVideoWidth();
+    public native void native_release();
+
+
 
     private OnPreparedListener mOnPreparedListener;
     public void setOnPreparedListener(OnPreparedListener p){
