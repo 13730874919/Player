@@ -18,7 +18,7 @@ public:
     virtual XData GetData();
     virtual void Close()=0;
     virtual void Clear();
-    int  maxFrame = 100;
+    int  maxFrame = 500;
     int pts=0;
 protected:
     std::list <XData> frames;

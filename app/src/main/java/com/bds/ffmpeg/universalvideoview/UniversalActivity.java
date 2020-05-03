@@ -138,8 +138,8 @@ public class UniversalActivity extends Activity implements UniversalVideoView.Vi
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d(TAG, "onSaveInstanceState Position=" + mVideoView.getCurrentPosition());
-        outState.putInt(SEEK_POSITION_KEY, mSeekPosition);
+//        Log.d(TAG, "onSaveInstanceState Position=" + mVideoView.getCurrentPosition());
+//        outState.putInt(SEEK_POSITION_KEY, mSeekPosition);
     }
 
     @Override

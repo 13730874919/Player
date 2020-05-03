@@ -323,7 +323,7 @@ public class UniversalMediaController extends FrameLayout {
 
 
     private void hideCenterView() {
-        Log.d("XPLAY", "msg.hideCenterView==");
+ //       Log.d("XPLAY", "msg.hideCenterView==");
         if (mCenterPlayButton.getVisibility() == VISIBLE) {
             mCenterPlayButton.setVisibility(GONE);
         }

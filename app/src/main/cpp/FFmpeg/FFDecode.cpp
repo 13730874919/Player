@@ -62,7 +62,7 @@ bool FFDecode::Open(XParameter par,bool isHard){
     XLOGI("avcodec_open2 success!");
     return true;
 }
-static int sendcnt = 0;
+
 static int reccnt = 0;
 bool FFDecode::SendPacket(XData pkt) {
     if(pkt.size<=0 || !pkt.data)return false;
@@ -73,7 +73,17 @@ bool FFDecode::SendPacket(XData pkt) {
         return false;
     }
     AVPacket *pack = (AVPacket*)pkt.data;
-
+    if(!pkt.isAudio){
+      //  if(pack->flags & AV_PKT_FLAG_KEY)
+            if(pack->flags==1)iflag=1;
+            XLOGE("SendPacket  pack->flags==%d",pack->flags);
+    } else{
+//        if(iflag==0)   {
+//            av_packet_free(&pack);
+//            mux.unlock();
+//            return true;
+//        }
+    }
     int re = avcodec_send_packet(codec,(AVPacket*)pkt.data);
 
     if(re != 0)
@@ -83,6 +93,7 @@ bool FFDecode::SendPacket(XData pkt) {
       //  XLOGI(" avcodec_send_packet error sendcnt=%d ",sendcnt);
         return false;
     }
+
     mux.unlock();
     return true;
 }
@@ -110,6 +121,7 @@ XData FFDecode::RecvFrame() {
 
     d.data = (unsigned char *) frame;
     if (codec->codec_type == AVMEDIA_TYPE_VIDEO){
+        XLOGE("RecvFrame  onces");
         //YUV
         d.size = (frame->linesize[0] + frame->linesize[1] + frame->linesize[2]) * frame->height;
         d.width = frame->width;
@@ -130,6 +142,7 @@ XData FFDecode::RecvFrame() {
 void FFDecode::Close() {
     IDecode::Clear();
     mux.lock();
+    iflag=0;
     XLOGE("frame.Close");
     pts = 0;
     if(frame)
@@ -145,6 +158,7 @@ void FFDecode::Close() {
 void FFDecode::Clear(bool isClearPts) {
     IDecode::Clear(isClearPts);
     mux.lock();
+    iflag=0;
     if(codec)
         avcodec_flush_buffers(codec);
     mux.unlock();
