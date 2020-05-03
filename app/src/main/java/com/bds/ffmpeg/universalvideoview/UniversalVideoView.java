@@ -657,7 +657,7 @@ public class UniversalVideoView extends GLSurfaceView
     /*
      * release the media player in any state
      */
-    private void release(boolean cleartargetstate) {
+    public void release(boolean cleartargetstate) {
         if (mMediaPlayer != null) {
           //  mMediaPlayer.reset();
             mMediaPlayer.release();

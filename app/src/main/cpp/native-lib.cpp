@@ -150,4 +150,9 @@ JNIEXPORT jint JNICALL
 Java_com_bds_ffmpeg_UPlayer_native_1getVideoWidth(JNIEnv *env, jobject thiz) {
     // TODO: implement native_getVideoWidth()
     return IPlayerPorxy::Get()->getVideoWidth();
+}extern "C"
+JNIEXPORT void JNICALL
+Java_com_bds_ffmpeg_UPlayer_native_1release(JNIEnv *env, jobject thiz) {
+    // TODO: implement native_release()
+    IPlayerPorxy::Get()->Close();
 }

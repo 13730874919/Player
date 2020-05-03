@@ -19,6 +19,7 @@ package com.bds.ffmpeg.universalvideoview;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,7 +31,7 @@ import android.widget.TextView;
 
 import com.bds.ffmpeg.R;
 
-public class MainActivity extends Activity implements UniversalVideoView.VideoViewCallback{
+public class UniversalActivity extends Activity implements UniversalVideoView.VideoViewCallback{
 
     private static final String TAG = "MainActivity";
     private static final String SEEK_POSITION_KEY = "SEEK_POSITION_KEY";
@@ -64,10 +65,18 @@ public class MainActivity extends Activity implements UniversalVideoView.VideoVi
 
         mVideoView.setMediaController(mMediaController);
         setVideoAreaSize();
+        Intent intent = getIntent();
+        String path =intent.getStringExtra("path");
+        if(path.isEmpty())
         mVideoView.setVideoPath(VIDEO_URL);
+        else
+            mVideoView.setVideoPath(path);
         mVideoView.setVideoViewCallback(this);
-        mStart = (TextView) findViewById(R.id.start);
+      //  mVideoView.start();
+      //  mMediaController.setVisibility(View.GONE);
 
+
+        mStart = (TextView) findViewById(R.id.start);
         mStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,7 +106,7 @@ public class MainActivity extends Activity implements UniversalVideoView.VideoVi
         if (mVideoView != null && mVideoView.isPlaying()) {
             mSeekPosition = mVideoView.getCurrentPosition();
             Log.d(TAG, "onPause mSeekPosition=" + mSeekPosition);
-          //  mVideoView.pause();
+            mVideoView.release(true);
         }
     }
 

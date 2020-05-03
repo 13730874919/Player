@@ -31,7 +31,7 @@ public:
     virtual int getVideoWidth();
     virtual int getVideoHeight();
     //是否视频硬解码
-    bool isHardDecode = true;
+    bool isHardDecode = false;
     virtual bool Seek(double pos);
     virtual void SetPause(bool isP);
 

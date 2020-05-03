@@ -22,12 +22,9 @@
 <!--            </intent-filter>-->
 <!--        </activity>-->
 
-        <activity android:name=".universalvideoview.MainActivity"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:configChanges="orientation|keyboardHidden"
-            >
+        <activity android:name=".fruit.MainActivity"
 
-            <!--                    <activity android:name=".VideoListActivity">-->
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -39,8 +36,9 @@
                 <data android:mimeType="video/mp4"></data>
             </intent-filter>
         </activity>
-        <activity android:name=".VideoViewActivity"
-            android:screenOrientation="fullSensor"
+        <activity android:name=".universalvideoview.UniversalActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:configChanges="orientation|keyboardHidden"
             >
         </activity>
 
