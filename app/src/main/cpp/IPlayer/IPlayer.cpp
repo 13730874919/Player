@@ -191,45 +191,46 @@ bool IPlayer::Seek(double pos) {
     val = GetNowMs()-start;
     XLOGE("seekpts val 222 ==%lld",val);
     //解码到实际需要显示的帧
-    long long seekPts = pos*demux->total;
-  //  XLOGE("seekpts==%lld",seekPts);
-    int cnt=0;
-    while(!isExit)
-    {
-        XData pkt = demux->Read();
-        if(pkt.size<=0)break;
-        if(pkt.isAudio)
-        {
-            if(pkt.pts < seekPts)
-            {
-                pkt.Drop();
-                continue;
-            }
-            //写入缓冲队列
-         //   demux->Notify(pkt);
-            continue;
-        }
-        cnt++;
-        //解码需要显示的帧之前的数据
-        vdecode->SendPacket(pkt);
-        pkt.Drop();
-        XData data = vdecode->RecvFrame();
-        if(data.size <=0)
-        {
-            continue;
-        }
-//        XLOGE("data.pts==%d",data.pts);
-        if(data.pts >= seekPts)
-        {
-            //vdecode->Notify(data);
-            break;
-        }
-    }
-    val = GetNowMs()-start;
-    XLOGE("seekpts val 333 ==%lld   cnt==%d",val,cnt);
+//    long long seekPts = pos*demux->total;
+//  //  XLOGE("seekpts==%lld",seekPts);
+//    int cnt=0;
+//    while(!isExit)
+//    {
+//        XData pkt = demux->Read();
+//        if(pkt.size<=0)break;
+//        if(pkt.isAudio)
+//        {
+//            if(pkt.pts < seekPts)
+//            {
+//                pkt.Drop();
+//                continue;
+//            }
+//            //写入缓冲队列
+//         //   demux->Notify(pkt);
+//            continue;
+//        }
+//        cnt++;
+//        //解码需要显示的帧之前的数据
+//        vdecode->SendPacket(pkt);
+//        pkt.Drop();
+//        XData data = vdecode->RecvFrame();
+//        if(data.size <=0)
+//        {
+//            continue;
+//        }
+////        XLOGE("data.pts==%d",data.pts);
+//        if(data.pts >= seekPts)
+//        {
+//            //vdecode->Notify(data);
+//            break;
+//        }
+//    }
+//    val = GetNowMs()-start;
+//    XLOGE("seekpts val 333 ==%lld   cnt==%d",val,cnt);
     mux.unlock();
-    SetPause(false);
     XLOGE("Seek end");
+    SetPause(false);
+
     return re;
 }
 

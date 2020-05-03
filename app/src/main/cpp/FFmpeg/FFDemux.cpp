@@ -73,7 +73,7 @@ XData FFDemux::Read() {
         av_packet_free(&pkt);
         return XData();
     }
-   // XLOGE("av_read_frame read onces");
+
         //转换pts
         pkt->pts = pkt->pts * (1000*r2d(ic->streams[pkt->stream_index]->time_base));
         pkt->dts = pkt->dts * (1000*r2d(ic->streams[pkt->stream_index]->time_base));

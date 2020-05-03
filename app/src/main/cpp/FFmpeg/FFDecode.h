@@ -25,6 +25,7 @@ public:
 protected:
     AVCodecContext *codec = 0;
     AVFrame *frame = 0;
+    int iflag = 0;
     std::mutex mux;
 };
 

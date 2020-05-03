@@ -14,6 +14,8 @@ void IDecode::Update(XData data) {
 
     while(!isExit){
         packsMutex.lock();
+        if(data.isAudio)
+        XLOGE("audio packs.size() ===%d ",packs.size());
         if(packs.size()<maxList){
             packs.push_back(data);
             packsMutex.unlock();

@@ -23,7 +23,7 @@ public:
 
     bool isAudio = false;
     //最大的队列缓冲
-    int maxList = 100;
+    int maxList = 500;
 
     //同步时间，再次打开文件要清理
     int synPts = 0;
