@@ -14,8 +14,6 @@ void IDecode::Update(XData data) {
 
     while(!isExit){
         packsMutex.lock();
-        if(data.isAudio)
-        XLOGE("audio packs.size() ===%d ",packs.size());
         if(packs.size()<maxList){
             packs.push_back(data);
             packsMutex.unlock();
@@ -67,9 +65,6 @@ void IDecode::Main()
                 if (!frame.data) break;
            //     XLOGE("RecvFrame %d",frame.size);
                 //发送数据给观察者
-                if(frame.pts==0){
-                    XLOGE("frame.pts %d",frame.pts);
-                }
                 pts= frame.pts;
                 this->Notify(frame);
             }

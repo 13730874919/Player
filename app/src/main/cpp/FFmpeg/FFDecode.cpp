@@ -72,18 +72,6 @@ bool FFDecode::SendPacket(XData pkt) {
         mux.unlock();
         return false;
     }
-    AVPacket *pack = (AVPacket*)pkt.data;
-    if(!pkt.isAudio){
-      //  if(pack->flags & AV_PKT_FLAG_KEY)
-            if(pack->flags==1)iflag=1;
-            XLOGE("SendPacket  pack->flags==%d",pack->flags);
-    } else{
-//        if(iflag==0)   {
-//            av_packet_free(&pack);
-//            mux.unlock();
-//            return true;
-//        }
-    }
     int re = avcodec_send_packet(codec,(AVPacket*)pkt.data);
 
     if(re != 0)
@@ -121,7 +109,6 @@ XData FFDecode::RecvFrame() {
 
     d.data = (unsigned char *) frame;
     if (codec->codec_type == AVMEDIA_TYPE_VIDEO){
-        XLOGE("RecvFrame  onces");
         //YUV
         d.size = (frame->linesize[0] + frame->linesize[1] + frame->linesize[2]) * frame->height;
         d.width = frame->width;
