@@ -22,8 +22,9 @@ public:
     void Update(XData data) override;
 
     bool isAudio = false;
+
     //最大的队列缓冲
-    int maxList = 500;
+    int maxList = 1000;
 
     //同步时间，再次打开文件要清理
     int synPts = 0;

@@ -18,6 +18,8 @@ void IDecode::Update(XData data) {
             packs.push_back(data);
             packsMutex.unlock();
             break;
+        } else{
+            XLOGE("over isau==%d",isAudio);
         }
         packsMutex.unlock();
         XSleep(1);
@@ -35,17 +37,24 @@ void IDecode::Main()
             continue;
         }
         packsMutex.lock();
+
         //判断音视频同步
         if(!isAudio && synPts > 0)
         {
             if(synPts < pts)
             {
                 packsMutex.unlock();
+//                if(debug) {
+//                    XLOGE("decode synPts ==%lld  pts=%lld",synPts,pts);
+//                }
                 XSleep(1);
                 continue;
             }
         }
-
+//        if(debug) {
+//            XLOGE("decode notigy==%lld", GetNowMs() - starttime);
+//            debug= false;
+//        }
         if (packs.empty())
         {
             packsMutex.unlock();
@@ -55,6 +64,7 @@ void IDecode::Main()
         //取出packet 消费者
         XData pack = packs.front();
         packs.pop_front();
+
         //发送数据到解码线程，一个数据包，可能解码多个结果
         if (this->SendPacket(pack))
         {
@@ -87,3 +97,4 @@ void IDecode::Clear(bool isClearPts) {
     synPts = 0;
     packsMutex.unlock();
 }
+

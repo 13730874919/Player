@@ -59,6 +59,7 @@ XData FFDemux::Read() {
     }
     data.data = (unsigned char *)pkt;
     data.size = pkt->size;
+    data.pts = pkt->pts;
     if(pkt->stream_index == audioStream)
     {
         data.isAudio = true;
