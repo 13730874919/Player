@@ -17,6 +17,10 @@ virtual bool IsPause()
     isPausing = isPause;
     return isPause;
 }
+    bool debug =false;
+    long long starttime=0;
+    long long GetNowMs();
+
 protected:
 bool isPause = false;
 bool isPausing = false;
