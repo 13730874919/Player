@@ -3,6 +3,7 @@ package com.bds.ffmpeg.universalvideoview;
 import android.app.Activity;
 import android.app.Service;
 import android.media.AudioManager;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,7 +45,9 @@ public class VideoGestureListener extends GestureDetector.SimpleOnGestureListene
     private SeekBar seekBar;
     private int preDuration;//手势调整进度条的滑动距离
 
+    private LinearLayout llProgressTime;//展示手势滑动进度条的图层
     private TextView tvProgressTime;//展示手势滑动改变多少的进度条
+
 
     private VideoGestureListener() {
     }
@@ -56,12 +59,15 @@ public class VideoGestureListener extends GestureDetector.SimpleOnGestureListene
         imgOperation = mControlPanel.findViewById(R.id.imgOperation);
         mAudioManager = (AudioManager) mControlPanel.getContext().getSystemService(Service.AUDIO_SERVICE);
         mMaxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-
+        seekBar = mControlPanel.findViewById(R.id.seekbar);
+        llProgressTime = mControlPanel.findViewById(R.id.llProgressTime);
+        tvProgressTime = mControlPanel.findViewById(R.id.tvProgressTime);
+        target = mControlPanel.getTarget();
     }
-
+    private   UniversalVideoView target;
     @Override
     public boolean onDown(MotionEvent e) {
-        UniversalVideoView target = mControlPanel.getTarget();
+        target = mControlPanel.getTarget();
         if (target == null) return false;
         baseValue = 0;
         currentX = target.getX();
@@ -111,7 +117,8 @@ public class VideoGestureListener extends GestureDetector.SimpleOnGestureListene
                 }
 
                 if (mChangePosition) {
-//                    onSeekProgressControl(x - mOldX);
+                  // onSeekProgressControl(x - mOldX);
+                   Log.d("XPLAY","seek changge ="+(x - mOldX));
                 } else if (mChangeBrightness) {
                     onBrightnessSlide((mOldY - y) * 2 / currentHeight);
                 } else if (mChangeVolume) {
@@ -124,6 +131,26 @@ public class VideoGestureListener extends GestureDetector.SimpleOnGestureListene
         return false;
     }
 
+    private void onSeekProgressControl(float seekDistance) {
+        if (!target.isPlaying())
+            return;
+        Log.d("XPLAY","target.getDuration() =="+currentWidth+"dff  "+seekBar.getProgress()  );
+        if(seekDistance>0)
+           preDuration = seekBar.getProgress() + (int) ((seekDistance / currentWidth) * 30);
+        else
+            preDuration = seekBar.getProgress() - (int) ((seekDistance / currentWidth) * 30);
+        if (preDuration > 100) {
+            preDuration = 100;
+        } else if (preDuration < 0) {
+            preDuration = 0;
+        }
+        Log.d("XPLAY","target.getDuration()111 =="+preDuration );
+        long time = preDuration * target.getDuration() / 100;
+        if (llProgressTime.getVisibility() == View.GONE) {
+            llProgressTime.setVisibility(View.VISIBLE);
+        }
+        tvProgressTime.setText(Utils.stringForTime(time) + "/" + Utils.stringForTime(target.getDuration()));
+    }
 
     /**
      * 滑动改变声音大小
@@ -190,7 +217,7 @@ public class VideoGestureListener extends GestureDetector.SimpleOnGestureListene
         @Override
         public void run() {
             llOperation.setVisibility(View.GONE);
-            mControlPanel.hideView();
+         //   mControlPanel.hideView();
         }
     };
 
@@ -204,13 +231,22 @@ public class VideoGestureListener extends GestureDetector.SimpleOnGestureListene
             llOperation.postDelayed(runnable, 500);
             //亮度变量清空
             mBrightness = -1f;
-
+        }
+        if (action == MotionEvent.ACTION_DOWN) {
+            if(mControlPanel.isShowing()){
+                mControlPanel.hideView();
+            }
         }
         return false;
     }
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
+//        if (mControlPanel.getTarget().isPlaying()) {
+//            mControlPanel.getTarget().pause();
+//        } else {
+//            mControlPanel.getTarget().start();
+//        }
         return true;
     }
 

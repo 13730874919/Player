@@ -262,14 +262,13 @@ public class UniversalMediaController extends FrameLayout {
 
 
     public void hide() {//只负责上下两条bar的隐藏,不负责中央loading,error,playBtn的隐藏
-    //    if (mShowing) {
+        if (mShowing) {
             mHandler.removeMessages(SHOW_PROGRESS);
             mTitleLayout.setVisibility(GONE);
             mControlLayout.setVisibility(GONE);
             mShowing = false;
-
-        hideCenterView();
-   //     }
+            hideCenterView();
+      }
     }
 
 
@@ -436,16 +435,18 @@ public class UniversalMediaController extends FrameLayout {
     //如果正在显示,则使之消失
     private OnTouchListener mTouchListener = new OnTouchListener() {
         public boolean onTouch(View v, MotionEvent event) {
-//            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                if (mShowing) {
-//                    hide();
-//                    handled = true;
-//                    return true;
-//                }
-//            }
-            if (mGestureDetector.onTouchEvent(event)) return true;
-            return videoGestureListener.onTouch(v, event);
-           // return false;
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (mShowing) {
+                    hide();
+                    handled = true;
+                    return true;
+                }
+            }
+            //    return false;
+
+            mGestureDetector.onTouchEvent(event);
+           return videoGestureListener.onTouch(v, event);
+
         }
     };
 

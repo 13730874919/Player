@@ -54,6 +54,21 @@
             android:visibility="visible" />
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/llProgressTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvProgressTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff" />
+    </LinearLayout>
+    <LinearLayout
         android:id="@+id/title_part"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -158,6 +173,7 @@
                 android:indeterminateDrawable="@drawable/uvv_star_play_progress_seek"
                 android:maxHeight="2dp"
                 android:minHeight="2dp"
+                android:max="100"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:progressDrawable="@drawable/uvv_star_play_progress_seek"
