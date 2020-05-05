@@ -13,10 +13,10 @@
         <meta-data
             android:name="android.max_aspect"
             android:value="2.4" />
-
+        <meta-data android:name="android.notch_support" android:value="true"/>
         <activity android:name=".fruit.MainActivity"
-
-            >
+            android:theme="@android:style/Theme.NoTitleBar">
+            <meta-data android:name="android.notch_support" android:value="true"/>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

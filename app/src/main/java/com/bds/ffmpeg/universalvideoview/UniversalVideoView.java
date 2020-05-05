@@ -863,7 +863,6 @@ public class UniversalVideoView extends GLSurfaceView
             }
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-
             if (getAppCompActivity(activity) != null) {
                 getAppCompActivity(activity).setRequestedOrientation(screenOrientation);
             } else {

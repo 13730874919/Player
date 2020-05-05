@@ -20,12 +20,17 @@ package com.bds.ffmpeg.fruit;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.core.app.ActivityCompat;
@@ -36,43 +41,141 @@ import com.bds.ffmpeg.R;
 import com.bds.ffmpeg.universalvideoview.UniversalActivity;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends Activity{
     private List<Fruit> fruitList = new ArrayList<>();
+    private List<Fruit> CurrenttList = new ArrayList<>();
     private ContentResolver mContentResolver;
 
-
-
+    private int currentDir=1;
+    private   FruitAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        checkPermission(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.fruit);
         mContentResolver= getContentResolver();
-        checkPermission(this);
-
         getVideos();
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         RecyclerView.LayoutManager layoutManager = null;
         layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
-        FruitAdapter adapter = new FruitAdapter(fruitList,mContentResolver,DensityUtil.getWindowWidth(this));
+        adapter = new FruitAdapter(fruitList,mContentResolver,DensityUtil.getWindowWidth(this),this);
         recyclerView.setAdapter(adapter);
+        CurrenttList=fruitList;
+        currentDir=1;
         adapter.setOnItemClickListener(new FruitAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
 
-                Fruit item = fruitList.get(position);
-                String path = item.getpath();
-                Intent intent5 = new Intent(MainActivity.this, UniversalActivity.class);
-                intent5.putExtra("path",path);
-                startActivity(intent5);
+                Fruit item = CurrenttList.get(position);
+                if(item.getlistSize()>1){
+                    ArrayList<Fruit> mFruitList = new ArrayList<Fruit>();
+                    for (int i=0; i<item.getlistSize();i++){
+                        String name = item.filelist.get(i);
+                        Fruit newitem = new Fruit(name,item.getpath());
+                        newitem.filelist.add(name);
+                        mFruitList.add(newitem);
+                    }
+                    CurrenttList=mFruitList;
+                    currentDir=2;
+                    adapter.setdataList(mFruitList);
+                    adapter.notifyDataSetChanged();
+                }else {
+                    String path = item.pathfilename();
+                    Intent intent5 = new Intent(MainActivity.this, UniversalActivity.class);
+                    intent5.putExtra("path", path);
+                    startActivity(intent5);
+                }
             }
         });
+        int [] ii=getNotchSize(this);
+        Log.d("XPLAY","file name==  "+ii[0]);
+        Log.d("XPLAY","file name==  "+ii[1]);
     }
+
+    /*刘海屏全屏显示FLAG*/
+    public static final int FLAG_NOTCH_SUPPORT=0x00010000;
+    /**
+     * 设置应用窗口在华为刘海屏手机使用刘海区
+     * @param window 应用页面window对象
+     */
+    public static void setFullScreenWindowLayoutInDisplayCutout(Window window) {
+        if (window == null) {
+            return;
+        }
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        try {
+            Class layoutParamsExCls = Class.forName("com.huawei.android.view.LayoutParamsEx");
+            Constructor con=layoutParamsExCls.getConstructor(WindowManager.LayoutParams.class);
+            Object layoutParamsExObj=con.newInstance(layoutParams);
+            Method method=layoutParamsExCls.getMethod("addHwFlags", int.class);
+            method.invoke(layoutParamsExObj, FLAG_NOTCH_SUPPORT);
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |InstantiationException
+                | InvocationTargetException e) {
+            Log.e("test", "hw add notch screen flag api error");
+        } catch (Exception e) {
+            Log.e("test", "other Exception");
+        }
+    }
+
+    public static int[] getNotchSize(Context context) {
+        int[] ret = new int[]{0, 0};
+        try {
+            ClassLoader cl = context.getClassLoader();
+            Class HwNotchSizeUtil = cl.loadClass("com.huawei.android.util.HwNotchSizeUtil");
+            Method get = HwNotchSizeUtil.getMethod("getNotchSize");
+            ret = (int[]) get.invoke(HwNotchSizeUtil);
+        } catch (ClassNotFoundException e) {
+            Log.e("test", "getNotchSize ClassNotFoundException");
+        } catch (NoSuchMethodException e) {
+            Log.e("test", "getNotchSize NoSuchMethodException");
+        } catch (Exception e) {
+            Log.e("test", "getNotchSize Exception");
+        } finally {
+            return ret;
+        }
+    }
+    public static boolean hasNotchInScreen(Context context) {
+        boolean ret = false;
+        try {
+            ClassLoader cl = context.getClassLoader();
+            Class HwNotchSizeUtil = cl.loadClass("com.huawei.android.util.HwNotchSizeUtil");
+            Method get = HwNotchSizeUtil.getMethod("hasNotchInScreen");
+            ret = (boolean) get.invoke(HwNotchSizeUtil);
+        } catch (ClassNotFoundException e) {
+            Log.e("test", "hasNotchInScreen ClassNotFoundException");
+        } catch (NoSuchMethodException e) {
+            Log.e("test", "hasNotchInScreen NoSuchMethodException");
+        } catch (Exception e) {
+            Log.e("test", "hasNotchInScreen Exception");
+        } finally {
+            return ret;
+        }
+    }
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if(event.getKeyCode()==KeyEvent.KEYCODE_BACK){
+            if(currentDir==2){
+                CurrenttList=fruitList;
+                currentDir=1;
+                adapter.setdataList(CurrenttList);
+                adapter.notifyDataSetChanged();
+                return true;
+            }else {
+                finish();
+            }
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
     private void checkPermission(Activity activity) {
         // Storage Permissions
         final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -108,12 +211,9 @@ public class MainActivity extends Activity{
         {
             return false;
         }
-
         return true;
     }
     private  void getVideos() {
-
-
         Cursor c = null;
         try {
             // String[] mediaColumns = { "_id", "_data", "_display_name",
@@ -122,14 +222,26 @@ public class MainActivity extends Activity{
             c = mContentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Video.Media.DEFAULT_SORT_ORDER);
             while (c.moveToNext()) {
                 String path = c.getString(c.getColumnIndexOrThrow(MediaStore.Video.Media.DATA));// 路径
-
                 if (!fileIsExists(path)) {
                     continue;
                 }
-
+                String parent = VideoFileHelper.getParent(path);
                 int id = c.getInt(c.getColumnIndexOrThrow(MediaStore.Video.Media._ID));// 视频的id
                 String name = c.getString(c.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 视频名称
-                Fruit item = new Fruit(name,id,path);
+                Fruit item = new Fruit(name,parent);
+                if(!TextUtils.isEmpty(parent)){
+                    Boolean quit = false;
+                    for (int i = 0; i < fruitList.size(); i++) {
+                            if (fruitList.get(i).getpath().equals(parent)) {
+                                quit=true;
+                                fruitList.get(i).filelist.add(name);
+                                break;
+                            }
+                    }
+                    if(quit){
+                        continue;}
+                }
+                item.filelist.add(name);
                 fruitList.add(item);
             }
         } catch (Exception e) {
@@ -139,30 +251,14 @@ public class MainActivity extends Activity{
                 c.close();
             }
         }
+        Log.d("XPLAY","file fruitList.size()=="+fruitList.size());
+        for(int i=0; i< fruitList.size(); i++){
+            Log.d("XPLAY","file path==  "+fruitList.get(i).getpath());
+            for(int j=0; j<fruitList.get(i).filelist.size();j++){
+                String name = fruitList.get(i).filelist.get(j);
+                Log.d("XPLAY","file name==  "+name);
+            }
+        }
     }
-//    private void initFruits() {
-//        for (int i = 0; i < 2; i++) {
-//            Fruit apple = new Fruit("Apple", R.drawable.apple_pic);
-//            fruitList.add(apple);
-//            Fruit banana = new Fruit("Banana", R.drawable.banana_pic);
-//            fruitList.add(banana);
-//            Fruit orange = new Fruit("Orange", R.drawable.orange_pic);
-//            fruitList.add(orange);
-//            Fruit watermelon = new Fruit("Watermelon", R.drawable.watermelon_pic);
-//            fruitList.add(watermelon);
-//            Fruit pear = new Fruit("Pear", R.drawable.pear_pic);
-//            fruitList.add(pear);
-//            Fruit grape = new Fruit("Grape", R.drawable.grape_pic);
-//            fruitList.add(grape);
-//            Fruit pineapple = new Fruit("Pineapple", R.drawable.pineapple_pic);
-//            fruitList.add(pineapple);
-//            Fruit strawberry = new Fruit("Strawberry", R.drawable.strawberry_pic);
-//            fruitList.add(strawberry);
-//            Fruit cherry = new Fruit("Cherry", R.drawable.cherry_pic);
-//            fruitList.add(cherry);
-//            Fruit mango = new Fruit("Mango", R.drawable.mango_pic);
-//            fruitList.add(mango);
-//
-//        }
-//    }
+
 }
