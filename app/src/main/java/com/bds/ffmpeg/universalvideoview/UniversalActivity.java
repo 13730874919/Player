@@ -22,6 +22,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +48,16 @@ public class UniversalActivity extends Activity implements UniversalVideoView.Vi
     View mVideoLayout;
     TextView mStart;
 
+    private Handler mhandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            mMediaController.setfullScreen();
+            mVideoView.start();
+            mMediaController.setVisibility(View.GONE);
+        }
+    };
+
     private int mSeekPosition;
     private int cachedHeight;
     private boolean isFullscreen;
@@ -61,7 +73,6 @@ public class UniversalActivity extends Activity implements UniversalVideoView.Vi
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN |
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-
         setContentView(R.layout.unisal);
         mVideoLayout = findViewById(R.id.video_layout);
         mBottomLayout = findViewById(R.id.bottom_layout);
@@ -69,18 +80,19 @@ public class UniversalActivity extends Activity implements UniversalVideoView.Vi
         mMediaController = (UniversalMediaController) findViewById(R.id.media_controller);
 
         mVideoView.setMediaController(mMediaController);
+        mMediaController.setfullScreen();
+
+
         setVideoAreaSize();
         Intent intent = getIntent();
         String path =intent.getStringExtra("path");
         if(path.isEmpty())
         mVideoView.setVideoPath(VIDEO_URL);
         else
-            mVideoView.setVideoPath(path);
+        mVideoView.setVideoPath(path);
         mVideoView.setVideoViewCallback(this);
-      //  mVideoView.start();
-      //  mMediaController.setVisibility(View.GONE);
 
-
+        mhandler.sendEmptyMessageDelayed(1,500);
         mStart = (TextView) findViewById(R.id.start);
         mStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,12 +152,7 @@ public class UniversalActivity extends Activity implements UniversalVideoView.Vi
     }
 
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-//        Log.d(TAG, "onSaveInstanceState Position=" + mVideoView.getCurrentPosition());
-//        outState.putInt(SEEK_POSITION_KEY, mSeekPosition);
-    }
+
 
     @Override
     protected void onRestoreInstanceState(Bundle outState) {

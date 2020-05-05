@@ -57,7 +57,7 @@ public class UniversalMediaController extends FrameLayout {
 
     private boolean mDragging;
 
-    private int test=5;
+
     private boolean mScalable = false;
     private boolean mIsFullScreen = false;
 //    private boolean mFullscreenEnabled = false;
@@ -484,15 +484,20 @@ public class UniversalMediaController extends FrameLayout {
 
     private OnClickListener mScaleListener = new OnClickListener() {
         public void onClick(View v) {
-            Log.d("Uplayer","mIsFullScreen=="+test);
             Log.d("Uplayer","mIsFullScreen=="+mIsFullScreen);
             mIsFullScreen = !mIsFullScreen;
-            test=10;
             updateScaleButton();
             updateBackButton();
             mPlayer.setFullscreen(mIsFullScreen);
         }
     };
+    public void setfullScreen(){
+        mIsFullScreen = true;
+        updateScaleButton();
+        updateBackButton();
+        Log.d("Uplayer","mPlayer=="+mPlayer);
+        mPlayer.setFullscreen(mIsFullScreen);
+    }
 
     //仅全屏时才有返回按钮
     private OnClickListener mBackListener = new OnClickListener() {
@@ -504,7 +509,6 @@ public class UniversalMediaController extends FrameLayout {
                 updateBackButton();
                 mPlayer.setFullscreen(false);
             }
-
         }
     };
 
