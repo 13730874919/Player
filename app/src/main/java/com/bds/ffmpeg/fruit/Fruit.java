@@ -1,24 +1,26 @@
 package com.bds.ffmpeg.fruit;
+
+import java.util.ArrayList;
+
 public class Fruit {
 
     private String name;
     private String path;
-    private int imageId;
-
-    public Fruit(String name, int imageId, String path){
+    public ArrayList<String> filelist = new ArrayList<String>();
+    public Fruit(String name, String path){
         this.name = name;
-        this.imageId = imageId;
         this.path = path;
     }
-
     public String getName() {
         return name;
     }
     public String getpath() {
         return path;
     }
-
-    public int getImageId() {
-        return imageId;
+    public String pathfilename() {
+        return path+"/"+name;
+    }
+    public int getlistSize() {
+        return filelist.size();
     }
 }
