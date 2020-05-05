@@ -23,6 +23,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -83,7 +84,7 @@ public class UniversalMediaController extends FrameLayout {
     private static final int SHOW_COMPLETE = 7;
     private static final int HIDE_COMPLETE = 8;
     StringBuilder mFormatBuilder;
-
+    protected GestureDetector mGestureDetector;
     Formatter mFormatter;
 
     private ImageButton mTurnButton;// 开启暂停按钮
@@ -114,11 +115,13 @@ public class UniversalMediaController extends FrameLayout {
         super(context);
         init(context);
     }
-
+    private VideoGestureListener videoGestureListener;
     private void init(Context context) {
         mContext = context;
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View viewRoot = inflater.inflate(R.layout.uvv_player_controller, this);
+        videoGestureListener = new VideoGestureListener(this);
+        mGestureDetector = new GestureDetector(getContext(), videoGestureListener);
         viewRoot.setOnTouchListener(mTouchListener);
         initControllerView(viewRoot);
     }
@@ -134,6 +137,20 @@ public class UniversalMediaController extends FrameLayout {
         mCenterPlayButton = v.findViewById(R.id.center_play_btn);
         mBackButton = v.findViewById(R.id.back_btn);
 
+
+//        setOnTouchListener(new OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                    if (mShowing) {
+//                        hide();
+//                        handled = true;
+//                    }
+//                }
+//                if (mGestureDetector.onTouchEvent(event)) return true;
+//                return videoGestureListener.onTouch(v, event);
+//            }
+//        });
         if (mTurnButton != null) {
             mTurnButton.requestFocus();
             mTurnButton.setOnClickListener(mPauseListener);
@@ -175,10 +192,13 @@ public class UniversalMediaController extends FrameLayout {
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
     }
 
-
+    private UniversalVideoView videoView;
     public void setMediaPlayer(MediaPlayerControl player) {
         mPlayer = player;
         updatePausePlay();
+    }
+    void setTarget(UniversalVideoView v){
+        videoView = v;
     }
 
     /**
@@ -230,7 +250,12 @@ public class UniversalMediaController extends FrameLayout {
             mHandler.sendMessageDelayed(msg, timeout);
         }
     }
+    public void hideView(){
+        Message msg = mHandler.obtainMessage(FADE_OUT);
+        mHandler.removeMessages(FADE_OUT);
+        mHandler.sendMessageDelayed(msg, 2000);
 
+    }
     public boolean isShowing() {
         return mShowing;
     }
@@ -403,19 +428,24 @@ public class UniversalMediaController extends FrameLayout {
         }
         return true;
     }
+    public UniversalVideoView getTarget(){
+        return videoView;
+    }
 
     boolean handled = false;
     //如果正在显示,则使之消失
     private OnTouchListener mTouchListener = new OnTouchListener() {
         public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                if (mShowing) {
-                    hide();
-                    handled = true;
-                    return true;
-                }
-            }
-            return false;
+//            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                if (mShowing) {
+//                    hide();
+//                    handled = true;
+//                    return true;
+//                }
+//            }
+            if (mGestureDetector.onTouchEvent(event)) return true;
+            return videoGestureListener.onTouch(v, event);
+           // return false;
         }
     };
 

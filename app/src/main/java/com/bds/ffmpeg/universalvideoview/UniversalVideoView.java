@@ -372,6 +372,7 @@ public class UniversalVideoView extends GLSurfaceView
     private void attachMediaController() {
         if (mMediaPlayer != null && mMediaController != null) {
             mMediaController.setMediaPlayer(this);
+            mMediaController.setTarget(this);
             mMediaController.setEnabled(isInPlaybackState());
             mMediaController.hide();
         }

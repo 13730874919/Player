@@ -27,7 +27,32 @@
 
         <include layout="@layout/uvv_on_error_layout" />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/llOperation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
 
+        <ImageView
+            android:id="@+id/imgOperation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/salient_brightness" />
+
+        <ProgressBar
+            android:id="@+id/pbOperation"
+            android:layout_width="50dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="5dp"
+            android:indeterminateOnly="false"
+            android:max="100"
+            android:progress="50"
+            android:progressDrawable="@drawable/progress_custom"
+            android:visibility="visible" />
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/title_part"
         android:layout_width="match_parent"
@@ -60,7 +85,6 @@
             android:singleLine="true"
             android:textColor="#ffffff"
             android:textSize="18dp" />
-
     </LinearLayout>
 
     <ImageView
