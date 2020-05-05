@@ -111,6 +111,7 @@ public class UniversalVideoView extends GLSurfaceView
     public UniversalVideoView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setRenderer(this);
+        mMediaPlayer =  UPlayer.getInstance();
         mContext = context;
         TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.UniversalVideoView,0,0);
         mFitXY = a.getBoolean(R.styleable.UniversalVideoView_uvv_fitXY, false);
@@ -604,7 +605,7 @@ public class UniversalVideoView extends GLSurfaceView
 //        super.surfaceCreated(holder);
                    mSurfaceHolder = holder;
         openVideo();
-        enableOrientationDetect();
+     //   enableOrientationDetect();
     }
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
