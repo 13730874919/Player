@@ -627,6 +627,7 @@ public class UniversalMediaController extends FrameLayout {
                 // the progress bar's position.
                 return;
             }
+      //      Log.d("XPLAY","seekBar.setProgress(preDuration)fromuser=="+fromuser);
             change = true;
         }
 
@@ -638,7 +639,7 @@ public class UniversalMediaController extends FrameLayout {
                 long duration = mPlayer.getDuration();
                  double newposition = (duration * bar.getProgress()) / 100L;
                 int newval = (int) newposition;
-            //    Log.d("XPLAY","11111111111seekTonewPosition="+newval);
+             //   Log.d("XPLAY","11111111111seekTonewPosition="+newval);
                 mPlayer.seekTo(newval);
                 if (mCurrentTime != null) {
                     mCurrentTime.setText(stringForTime(newval));
