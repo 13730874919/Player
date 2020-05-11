@@ -670,6 +670,16 @@ public class UniversalVideoView extends GLSurfaceView
             }
         }
     }
+    public void release() {
+        if (mMediaPlayer != null) {
+            //  mMediaPlayer.reset();
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+            mCurrentState = STATE_IDLE;
+            mTargetState  = STATE_IDLE;
+
+        }
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
