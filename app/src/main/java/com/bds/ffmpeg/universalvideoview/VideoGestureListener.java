@@ -3,6 +3,7 @@ package com.bds.ffmpeg.universalvideoview;
 import android.app.Activity;
 import android.app.Service;
 import android.media.AudioManager;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -64,6 +65,7 @@ public class VideoGestureListener extends GestureDetector.SimpleOnGestureListene
         target = mControlPanel.getTarget();
     }
     private   UniversalVideoView target;
+    private Boolean isproChange=false;
     @Override
     public boolean onDown(MotionEvent e) {
         target = mControlPanel.getTarget();
@@ -132,7 +134,7 @@ public class VideoGestureListener extends GestureDetector.SimpleOnGestureListene
     private void onSeekProgressControl(float seekDistance) {
         if (!target.isPlaying())
             return;
-      //  Log.d("XPLAY","target.getDuration() =="+currentWidth+"dff  "+seekBar.getProgress()  );
+   //    Log.d("XPLAY","target.getDuration() =="+currentWidth+"dff  "+seekBar.getProgress()  );
         preDuration = seekBar.getProgress() + (int) ((seekDistance / currentWidth) * 30);
         if (preDuration > 100) {
             preDuration = 100;
@@ -143,6 +145,7 @@ public class VideoGestureListener extends GestureDetector.SimpleOnGestureListene
         if (llProgressTime.getVisibility() == View.GONE) {
             llProgressTime.setVisibility(View.VISIBLE);
         }
+        isproChange=true;
         tvProgressTime.setText(Utils.stringForTime(time) + "/" + Utils.stringForTime(target.getDuration()));
     }
 
@@ -228,8 +231,13 @@ public class VideoGestureListener extends GestureDetector.SimpleOnGestureListene
 
             if (mChangePosition) {
                 if (seekBar != null) {
-                    seekBar.setProgress(preDuration);
-                    mControlPanel.onStopTrackingTouch(seekBar);
+
+                    Log.d("XPLAY","seekBar.setProgress(preDuration)");
+                    if(isproChange) {
+                        seekBar.setProgress(preDuration);
+                        mControlPanel.onStopTrackingTouch(seekBar);
+                        isproChange = false;
+                    }
                 }
             }
         }
