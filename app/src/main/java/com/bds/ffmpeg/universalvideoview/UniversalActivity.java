@@ -81,7 +81,7 @@ public class UniversalActivity extends Activity implements UniversalVideoView.Vi
 
         mVideoView.setMediaController(mMediaController);
         mMediaController.setfullScreen();
-
+        mMediaController.setActivity(this);
 
         setVideoAreaSize();
         Intent intent = getIntent();

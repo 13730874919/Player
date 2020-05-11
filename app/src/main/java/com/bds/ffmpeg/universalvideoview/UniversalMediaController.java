@@ -17,6 +17,7 @@
 
 package com.bds.ffmpeg.universalvideoview;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Handler;
@@ -182,7 +183,7 @@ public class UniversalMediaController extends FrameLayout {
                 SeekBar seeker = (SeekBar) mProgress;
                 seeker.setOnSeekBarChangeListener(mSeekListener);
             }
-            mProgress.setMax(1000);
+            mProgress.setMax(100);
         }
 
         mEndTime = (TextView) v.findViewById(R.id.duration);
@@ -392,7 +393,7 @@ public class UniversalMediaController extends FrameLayout {
         if (mProgress != null) {
             if (duration > 0) {
                 // use long to avoid overflow
-                long pos = 1000L * position / duration;
+                long pos = 100L * position / duration;
                 mProgress.setProgress((int) pos);
             }
             int percent = mPlayer.getBufferPercentage();
@@ -522,6 +523,7 @@ public class UniversalMediaController extends FrameLayout {
             mPlayer.setFullscreen(mIsFullScreen);
         }
     };
+    private Activity mActivity;
     public void setfullScreen(){
         mIsFullScreen = true;
         updateScaleButton();
@@ -529,17 +531,24 @@ public class UniversalMediaController extends FrameLayout {
         Log.d("Uplayer","mPlayer=="+mPlayer);
         mPlayer.setFullscreen(mIsFullScreen);
     }
+    public void setActivity(Activity a){
+        mActivity =a;
+    }
 
     //仅全屏时才有返回按钮
     private OnClickListener mBackListener = new OnClickListener() {
         public void onClick(View v) {
-            if (mIsFullScreen) {
-                Log.d("Uplayer","OnClickListener==");
-                mIsFullScreen = false;
-                updateScaleButton();
-                updateBackButton();
-                mPlayer.setFullscreen(false);
-            }
+//            if (mIsFullScreen) {
+//                Log.d("Uplayer","OnClickListener==");
+//                mIsFullScreen = false;
+//                updateScaleButton();
+//                updateBackButton();
+//                mPlayer.setFullscreen(false);
+//            }
+            mPlayer.pause();
+            mActivity.finish();
+
+
         }
     };
 
@@ -592,7 +601,9 @@ public class UniversalMediaController extends FrameLayout {
         }
         updatePausePlay();
     }
-
+    public void onStopTrackingTouch(SeekBar bar) {
+        if(mSeekListener!=null)mSeekListener.onStopTrackingTouch(bar);
+    }
 
     private OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
 
@@ -611,13 +622,11 @@ public class UniversalMediaController extends FrameLayout {
         }
 
         public void onProgressChanged(SeekBar bar, int progress, boolean fromuser) {
-            if (mPlayer == null || !fromuser) {
+            if (mPlayer == null)  {
                 // We're not interested in programmatically generated changes to
                 // the progress bar's position.
                 return;
             }
-
-
             change = true;
         }
 
@@ -627,9 +636,9 @@ public class UniversalMediaController extends FrameLayout {
             }
             if (change) {
                 long duration = mPlayer.getDuration();
-                 double newposition = (duration * bar.getProgress()) / 1000L;
+                 double newposition = (duration * bar.getProgress()) / 100L;
                 int newval = (int) newposition;
-                Log.d("XPLAY","11111111111seekTonewPosition="+newval);
+            //    Log.d("XPLAY","11111111111seekTonewPosition="+newval);
                 mPlayer.seekTo(newval);
                 if (mCurrentTime != null) {
                     mCurrentTime.setText(stringForTime(newval));
@@ -723,6 +732,7 @@ public class UniversalMediaController extends FrameLayout {
         void start();
 
         void pause();
+        public void release() ;
 
         int getDuration();
 

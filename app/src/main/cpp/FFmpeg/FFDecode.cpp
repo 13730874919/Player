@@ -17,7 +17,7 @@ bool FFDecode::Open(XParameter par,bool isHard){
     Close();
     if(!par.para)return false;
     AVCodecParameters *p = par.para;
-    AVCodec *cd = avcodec_find_decoder(p->codec_id);
+    AVCodec *cd =0;
 
     if(isHard)
     {
@@ -27,6 +27,10 @@ bool FFDecode::Open(XParameter par,bool isHard){
             cd = avcodec_find_decoder_by_name("h264_mediacodec");
         }
 
+    }
+    if(!cd)
+    {
+        cd=avcodec_find_decoder(p->codec_id);
     }
     if(!cd)
     {
