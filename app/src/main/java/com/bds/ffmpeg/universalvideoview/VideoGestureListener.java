@@ -82,6 +82,7 @@ public class VideoGestureListener extends GestureDetector.SimpleOnGestureListene
         mChangeVolume=false;
         mChangeBrightness=false;
         mChangePosition = false;
+        Log.d("XPLAY","target.down() =="+mChangePosition);
         return true;
     }
 
@@ -98,11 +99,13 @@ public class VideoGestureListener extends GestureDetector.SimpleOnGestureListene
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-
             if (e2.getPointerCount() == 1) {//单指移动
                 float mOldX = e1.getX(), mOldY = e1.getY();
                 int x = (int) e2.getRawX();
                 int y = (int) e2.getRawY();
+                Log.d("XPLAY","target.firstTouch() =="+firstTouch);
+                Log.d("XPLAY","target.mChangePosition() =="+mChangePosition);
+                Log.d("XPLAY","target.distanceY() =="+distanceY);
                 if (firstTouch) {
                     mChangePosition = Math.abs(distanceX) >= Math.abs(distanceY);
                     if (!mChangePosition) {
@@ -215,6 +218,8 @@ public class VideoGestureListener extends GestureDetector.SimpleOnGestureListene
         public void run() {
             llOperation.setVisibility(View.GONE);
             llProgressTime.setVisibility(View.GONE);
+            mChangePosition=false;
+            firstTouch = true;
         }
     };
 
