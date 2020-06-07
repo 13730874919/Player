@@ -123,7 +123,7 @@ public class UniversalMediaController extends FrameLayout {
         View viewRoot = inflater.inflate(R.layout.uvv_player_controller, this);
         videoGestureListener = new VideoGestureListener(this);
         mGestureDetector = new GestureDetector(getContext(), videoGestureListener);
-        viewRoot.setOnTouchListener(mTouchListener);
+        setOnTouchListener(mTouchListener);
         initControllerView(viewRoot);
     }
 
@@ -266,6 +266,7 @@ public class UniversalMediaController extends FrameLayout {
         if (mShowing) {
             mHandler.removeMessages(SHOW_PROGRESS);
             mTitleLayout.setVisibility(GONE);
+         //   Log.d("XPLAY", " mControlLayout.setVisibility(GONE)");
             mControlLayout.setVisibility(GONE);
             mShowing = false;
             hideCenterView();
@@ -348,7 +349,7 @@ public class UniversalMediaController extends FrameLayout {
 
 
     private void hideCenterView() {
- //       Log.d("XPLAY", "msg.hideCenterView==");
+  //      Log.d("XPLAY", "msg.hideCenterView==");
         if (mCenterPlayButton.getVisibility() == VISIBLE) {
             mCenterPlayButton.setVisibility(GONE);
         }
@@ -411,8 +412,10 @@ public class UniversalMediaController extends FrameLayout {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                show(0); // show until hide is called
-                handled = false;
+               // if (!isShowing()) {
+               //     show(0); // show until hide is called
+              //  }
+            //    handled = false;
                 break;
             case MotionEvent.ACTION_UP:
                 if (!handled) {
@@ -440,12 +443,12 @@ public class UniversalMediaController extends FrameLayout {
                 if (mShowing) {
                     hide();
                     handled = true;
-                    return true;
+                }else {
+                    show(0); // show until hide is called
+                    handled = false;
                 }
             }
-            //    return false;
-
-            mGestureDetector.onTouchEvent(event);
+            boolean ret=  mGestureDetector.onTouchEvent(event);
            return videoGestureListener.onTouch(v, event);
 
         }

@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -99,6 +100,37 @@ public class MainActivity extends Activity{
         int [] ii=getNotchSize(this);
         Log.d("XPLAY","file name==  "+ii[0]);
         Log.d("XPLAY","file name==  "+ii[1]);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = getIntent();
+        Uri _url = intent.getData();
+
+        if(_url!=null) {
+            String path = getFilePathFromContentUri(_url,mContentResolver);
+            Log.d("XPLAY", "getScheme===" +  path);
+            Intent intent5 = new Intent(MainActivity.this, UniversalActivity.class);
+            intent5.putExtra("path", path);
+            startActivity(intent5);
+        }
+    }
+    public static String getFilePathFromContentUri(Uri selectedVideoUri,
+                                                   ContentResolver contentResolver) {
+        String filePath;
+        String[] filePathColumn = {MediaStore.MediaColumns.DATA};
+
+        Cursor cursor = contentResolver.query(selectedVideoUri, filePathColumn, null, null, null);
+//      也可用下面的方法拿到cursor
+//      Cursor cursor = this.context.managedQuery(selectedVideoUri, filePathColumn, null, null, null);
+
+        cursor.moveToFirst();
+
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        filePath = cursor.getString(columnIndex);
+        cursor.close();
+        return filePath;
     }
 
     /*刘海屏全屏显示FLAG*/

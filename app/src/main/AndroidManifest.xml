@@ -26,6 +26,7 @@
                 <action android:name="android.intent.action.VIEW"></action>
                 <category android:name="android.intent.category.DEFAULT"></category>
                 <data android:mimeType="video/mp4"></data>
+                <data android:mimeType="video/flv"></data>
             </intent-filter>
         </activity>
         <activity android:name=".universalvideoview.UniversalActivity"
