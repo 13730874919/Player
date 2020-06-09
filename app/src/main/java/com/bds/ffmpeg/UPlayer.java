@@ -32,7 +32,6 @@ public class UPlayer {
     }
     public void pause(){
         Log.e(TAG,"Uplayer Pause");
-        Log.e(TAG,Log.getStackTraceString(new Throwable()));
         Pause();
     }
     public void release(){

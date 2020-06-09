@@ -68,7 +68,7 @@ public class VideoGestureListener extends GestureDetector.SimpleOnGestureListene
     private Boolean isproChange=false;
     @Override
     public boolean onDown(MotionEvent e) {
-        Log.d("XPLAY","onDown");
+       // Log.d("XPLAY","onDown");
         target = mControlPanel.getTarget();
         if (target == null) return false;
         baseValue = 0;

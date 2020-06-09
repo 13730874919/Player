@@ -21,6 +21,7 @@ bool FFDemux::Open(const  char *url) {
         XLOGE("open failed %s",url);
         return false;
     }
+    av_dump_format(ic, 0, url, 0);
     XLOGE("avformat_open_input success");
     ret = avformat_find_stream_info(ic,0);
     if(ret !=0){
