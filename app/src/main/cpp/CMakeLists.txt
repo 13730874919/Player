@@ -53,8 +53,7 @@ add_library( # Sets the name of the library.
 
              # Sets the library as a shared library.
              SHARED
-            Tool/XLog.cpp
-            Tool/XData.cpp
+        Tool/XData.cpp
             FFmpeg/FFDemux.cpp
             FFmpeg/FFDecode.cpp
         FFmpeg/FFResample.cpp

@@ -108,6 +108,11 @@ public class MainActivity extends Activity{
         Intent intent = getIntent();
         Uri _url = intent.getData();
 
+//        Intent it = new Intent(MainActivity.this, UniversalActivity.class);
+//        it.putExtra("path", "http://vfx.mtime.cn/Video/2018/07/06/mp4/180706094003288023.mp4");
+//        startActivity(it);
+
+
         if(_url!=null) {
             String path = getFilePathFromContentUri(_url,mContentResolver);
             Log.d("XPLAY", "getScheme===" +  path);
@@ -213,7 +218,9 @@ public class MainActivity extends Activity{
         final int REQUEST_EXTERNAL_STORAGE = 1;
         String[] PERMISSIONS_STORAGE = {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.INTERNET
+        };
 
         try {
             //检测是否有写的权限

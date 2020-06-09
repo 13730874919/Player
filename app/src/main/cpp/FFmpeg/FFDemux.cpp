@@ -3,14 +3,46 @@
 //
 extern "C"{
 #include <libavformat/avformat.h>
+#include <libavutil/log.h>
 }
 
 #include <XData.h>
+#include <android/log.h>
 #include "FFDemux.h"
 #include "XLog.h"
 
+static void ffp_log_callback_report(void *ptr, int level, const char *fmt, va_list vl)
+{
+    int ffplv = ANDROID_LOG_VERBOSE;
 
 
+
+    va_list vl2;
+    char line[1024];
+    static int print_prefix = 1;
+
+
+    va_copy(vl2, vl);
+    // av_log_default_callback(ptr, level, fmt, vl);
+    av_log_format_line(ptr, level, fmt, vl2, line, sizeof(line), &print_prefix);
+    va_end(vl2);
+
+    if (level <= AV_LOG_ERROR)
+        ffplv = ANDROID_LOG_ERROR;
+    else if (level <= AV_LOG_WARNING)
+        ffplv = ANDROID_LOG_WARN;
+    else if (level <= AV_LOG_INFO)
+        ffplv = ANDROID_LOG_INFO;
+    else if (level <= AV_LOG_VERBOSE)
+        ffplv = ANDROID_LOG_VERBOSE;
+    else
+        ffplv = ANDROID_LOG_DEBUG;
+
+    ALOG(ffplv, FF_LOG_TAG, "%s", line);
+}
+static void log_callback_null(void *ptr, int level, const char *fmt, va_list vl)
+{
+}
 bool FFDemux::Open(const  char *url) {
     Close();
     mux.lock();
@@ -21,7 +53,10 @@ bool FFDemux::Open(const  char *url) {
         XLOGE("open failed %s",url);
         return false;
     }
+
     av_dump_format(ic, 0, url, 0);
+
+  //  av_log_set_callback(log_callback_null);
     XLOGE("avformat_open_input success");
     ret = avformat_find_stream_info(ic,0);
     if(ret !=0){
@@ -30,6 +65,7 @@ bool FFDemux::Open(const  char *url) {
         return false;
     }
     XLOGE("avformat_find_stream_info success");
+
     this->total = ic->duration/(AV_TIME_BASE/1000);
 
     mux.unlock();
@@ -89,6 +125,7 @@ FFDemux::FFDemux() {
     if(isFirst){
         isFirst = false;
         XLOGE("av_register_all ");
+        av_log_set_callback(ffp_log_callback_report);
     //注册封装器
         av_register_all();
 
