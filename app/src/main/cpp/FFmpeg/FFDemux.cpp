@@ -56,7 +56,7 @@ bool FFDemux::Open(const  char *url) {
 
     av_dump_format(ic, 0, url, 0);
 
-  //  av_log_set_callback(log_callback_null);
+   // av_log_set_callback(log_callback_null);
     XLOGE("avformat_open_input success");
     ret = avformat_find_stream_info(ic,0);
     if(ret !=0){
@@ -125,7 +125,7 @@ FFDemux::FFDemux() {
     if(isFirst){
         isFirst = false;
         XLOGE("av_register_all ");
-        av_log_set_callback(ffp_log_callback_report);
+    //    av_log_set_callback(ffp_log_callback_report);
     //注册封装器
         av_register_all();
 

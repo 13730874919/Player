@@ -816,6 +816,7 @@ public class UniversalVideoView extends GLSurfaceView
 
     @Override
     public boolean isPlaying() {
+        if(mMediaPlayer==null) return false;
        return isInPlaybackState() && mMediaPlayer.isPlaying();
     }
 
@@ -832,7 +833,9 @@ public class UniversalVideoView extends GLSurfaceView
 //                mCurrentState != STATE_ERROR &&
 //                mCurrentState != STATE_IDLE &&
 //                mCurrentState != STATE_PREPARING);
+
         return true;
+
     }
 
     @Override

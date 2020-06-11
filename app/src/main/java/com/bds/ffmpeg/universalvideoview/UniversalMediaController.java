@@ -386,7 +386,7 @@ public class UniversalMediaController extends FrameLayout {
     }
 
     private int setProgress() {
-        if (mPlayer == null || mDragging) {
+        if (mPlayer == null || mDragging || !mPlayer.isPlaying()) {
             return 0;
         }
         int position = mPlayer.getCurrentPosition();
@@ -548,7 +548,7 @@ public class UniversalMediaController extends FrameLayout {
 //                updateBackButton();
 //                mPlayer.setFullscreen(false);
 //            }
-            mPlayer.pause();
+            mPlayer.release();
             mActivity.finish();
 
 
