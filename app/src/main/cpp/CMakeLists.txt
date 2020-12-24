@@ -10,9 +10,8 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 #ffmpeg路径
-set(FFMPEG_DIR "D:/AndroidWork/ffmpeg/app")
+set(FFMPEG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../)
 
-#set(FFMPEG_DIR "../../../../")
 #ffmpeg头文件路径
 set(FFMPEG_INCLUDE_DIR ${FFMPEG_DIR}/include)
 set(FFMPEG_PACK_INCLUDE_DIR ${FFMPEG_DIR}/src/main/cpp/FFmpeg)
@@ -49,34 +48,33 @@ set_target_properties(swresample PROPERTIES IMPORTED_LOCATION ${FFMPEG_LIB_DIR}/
 
 
 add_library( # Sets the name of the library.
-             native-lib
-
-             # Sets the library as a shared library.
-             SHARED
-        Tool/XData.cpp
+            ffmpeg
+            # Sets the library as a shared library.
+            SHARED
+            Tool/XData.cpp
             FFmpeg/FFDemux.cpp
             FFmpeg/FFDecode.cpp
-        FFmpeg/FFResample.cpp
-        FFmpeg/FFPlayerBuilder.cpp
+            FFmpeg/FFResample.cpp
+            FFmpeg/FFPlayerBuilder.cpp
             IPlayer/IDemux.cpp
             IPlayer/IDecode.cpp
-        IPlayer/IResample.cpp
-        IPlayer/IAudioPlay.cpp
-        IPlayer/IPlayer.cpp
-        IPlayer/IPlayerPorxy.cpp
-        IPlayer/IPlayerBuilder.cpp
+            IPlayer/IResample.cpp
+            IPlayer/IAudioPlay.cpp
+            IPlayer/IPlayer.cpp
+            IPlayer/IPlayerPorxy.cpp
+            IPlayer/IPlayerBuilder.cpp
             IPlayer/IVideoView.cpp
             Tool/XThread.cpp
             Tool/XParameter.cpp
             Tool/IObserver.cpp
             OpenGL/XEGL.cpp
             OpenGL/XShader.cpp
-        OpenGL/SLAudioPlay.cpp
+            OpenGL/SLAudioPlay.cpp
             OpenGL/XTexture.cpp
             OpenGL/GLVideoView.cpp
-        OpenGL/SLAudioPlay.cpp
-             # Provides a relative path to your source file(s).
-             native-lib.cpp )
+            OpenGL/SLAudioPlay.cpp
+            # Provides a relative path to your source file(s).
+            native-lib.cpp )
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -96,11 +94,11 @@ find_library( # Sets the name of the path variable.
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-                       native-lib
-GLESv2 EGL
-OpenSLES
-android
-avcodec avformat avutil swscale swresample
+                       ffmpeg
+                       GLESv2 EGL
+                       OpenSLES
+                       android
+                       avcodec avformat avutil swscale swresample
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )
